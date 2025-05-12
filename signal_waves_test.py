@@ -1,7 +1,6 @@
 import numpy as np
 import PyDAQmx
 from PyDAQmx import *
-import keyboard
 import time
 from scipy import signal as sg
 import matplotlib.pyplot as plt

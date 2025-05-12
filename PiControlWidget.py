@@ -1,12 +1,7 @@
-import yaml
 import napari
-from napari.qt.threading import thread_worker
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QSpinBox, QLabel, QLineEdit, QRadioButton, \
-    QGroupBox, QSlider, QApplication
-from PyQt5.QtCore import Qt
-from simple_galvo import set_galvos_position
-from app_functions import load_yaml, save_yaml, CONFIG, save_params_for_all_widgets
-from pi_control import PiController
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
+from app_functions import load_yaml, save_yaml, CONFIG
+from PiController import PiController
 import time
 from SlidesWidget import pi_widgets
 
@@ -59,22 +54,12 @@ class PIControlWidget(QWidget):
         layout.addWidget(self.position_label)
         layout.addWidget(self.position_input)
 
-        #self.position_type_group = QGroupBox("Position Type")
-        #self.position_type_layout = QHBoxLayout()
-        #self.absolute_radio = QRadioButton("Absolute")
-        #self.absolute_radio.setChecked(True)  # Par défaut, position absolue
-        #self.position_type_layout.addWidget(self.absolute_radio)
-        #self.position_type_group.setLayout(self.position_type_layout)
-        #layout.addWidget(self.position_type_group)
-
         self.arrow_layout = QHBoxLayout()
 
-        # Bouton de flèche pour augmenter la position
         self.down_button = QPushButton("<")
         self.down_button.clicked.connect(self.move_down)
         self.arrow_layout.addWidget(self.down_button)
 
-        # Bouton de flèche pour diminuer la position
         self.up_button = QPushButton(">")
         self.up_button.clicked.connect(self.move_up)
         self.arrow_layout.addWidget(self.up_button)
@@ -84,15 +69,11 @@ class PIControlWidget(QWidget):
         self.send_button = QPushButton(f"Send Abs Position to Device {controller_id}")
         layout.addWidget(self.send_button)
 
-
-        #self.get_position_button = QPushButton(f"Get Position of Device {controller_id}")
         self.err_display = QLabel(f"")
-        #layout.addWidget(self.get_position_button)
+
         layout.addWidget(self.err_display)
 
-        # Connecter les actions
         self.send_button.clicked.connect(self.send_position)
-        #self.get_position_button.clicked.connect(self.get_position)
 
         self.setLayout(layout)
 

@@ -1,13 +1,12 @@
 import yaml
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, QFormLayout, QGridLayout, QFileDialog, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, QFormLayout, QGridLayout, QFileDialog, QHBoxLayout
 from PyQt5.QtCore import Qt
 import napari
-import time
 import os
 
 from pymmcore_plus import CMMCorePlus
 
-from pi_control import PiController
+from PiController import PiController
 
 
 from pi_ni_scan import brillouin_scan
@@ -20,7 +19,7 @@ class ScansWidget(QWidget):
         self.setStyleSheet("background-color: rgb(38,41,48);")
         self.setWindowTitle("Scan Widget")
         self.setGeometry(100, 100, 200, 100)
-        self.scan_button = QPushButton("Brillouin parameters", self)
+        self.scan_button = QPushButton("Scan parameters", self)
         self.scan_button.setStyleSheet("""
             background-color: rgb(180, 180, 180);
             color: black;
@@ -51,12 +50,12 @@ class BrillouinScanWidget(QWidget):
         self.hidden = True
         self.pi_controller = pi_controller
         self.core = core
-        self.filepath = "brillouin_params.yaml"
+        self.filepath = "config/brillouin_params.yaml"
         self.start_z, self.end_z = 16.99, 16.99
         self.start_x, self.end_x = 8, 8
         self.start_x, self.end_x = 8, 8
         self.start_y, self.end_y = 14, 14
-        self.setWindowTitle("Brillouin parameters")
+        self.setWindowTitle("Scan parameters")
         self.setGeometry(0, 0, 800, 500)
         self.setStyleSheet("""
                     QWidget {
@@ -75,7 +74,7 @@ class BrillouinScanWidget(QWidget):
                 """)
         self.setWindowFlags(Qt.Window)
 
-        self.title_label = QLabel("Brillouin Scan Parameters", self)
+        self.title_label = QLabel("Scan Parameters", self)
         self.title_label.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
 
@@ -219,7 +218,7 @@ class BrillouinScanWidget(QWidget):
                         },
                         "folder": self.path_input.text(),
 
-                        "exposure": self.exposure_input.text()
+                        "exposure": float(self.exposure_input.text())
                     }
 
                     with open(self.filepath, "w") as file:

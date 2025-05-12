@@ -1,7 +1,7 @@
 import numpy as np
 from tifffile import tifffile
 from ome_types import from_xml
-from pi_control import PiController
+from PiController import PiController
 from PyDAQmx import Task
 import PyDAQmx
 from pulsing import generate_sin_wave
@@ -259,13 +259,10 @@ if __name__=="__main__":
     core.loadSystemConfiguration("C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg")
     core.setExposure(20)
     pi_controller = PiController()
-
     #scan(pi_controller,1,10,12,-0.5,0.5,10,20,10000)
-
     #set_galvos_position(0,0)
     #sync_scan(pi_controller,1,core,10,12,-0.5,0.5,20,10,10)
     brillouin_scan(pi_controller,core,
                   12,10,15,
                    12.5,11.5,15.04,
                    100,100,20, "images/Brillouin_Tiff")
-

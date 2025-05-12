@@ -1,9 +1,9 @@
 import yaml
-from pi_control import PiController
+from PiController import PiController
 from pymmcore_plus import CMMCorePlus
 import napari
 
-CONFIG ="config.yaml"
+CONFIG ="config/galvo_pi_config.yaml"
 SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
 galvo1_val = 0
 galvo2_val = 0

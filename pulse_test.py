@@ -4,7 +4,7 @@ import time
 import numpy as np
 from PyDAQmx import Task
 import PyDAQmx
-from pi_control import PiController
+from PiController import PiController
 
 task = Task()
 
