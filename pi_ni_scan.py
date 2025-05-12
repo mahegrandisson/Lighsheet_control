@@ -222,7 +222,7 @@ def save_images(images,path):
         img = images[i][3]
         spacing = images[i][4]
         tifffile.imwrite(
-            path + "/" + f"Brillouin_Z"+str(z_pos)+"_X"+str(x_pos)+"_Y"+str(y_pos)+".ome.tif",
+            path + "/" + f"Z"+str(z_pos)+"_X"+str(x_pos)+"_Y"+str(y_pos)+".ome.tif",
             img,
              ome=True,
             metadata={
@@ -267,5 +267,5 @@ if __name__=="__main__":
     brillouin_scan(pi_controller,core,
                   12,10,15,
                    12.5,11.5,15.04,
-                   100,100,20, "Brillouin_Tiff")
+                   100,100,20, "images/Brillouin_Tiff")
 
