@@ -1,0 +1,41 @@
+import yaml
+
+
+CONFIG ="config.yaml"
+SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
+galvo1_val = 0
+galvo2_val = 0
+pi1_val = 11
+pi2_val= 80
+pi3_val=14.35
+pi4_val= 12
+
+pi_widgets = []
+
+
+def load_yaml(path: str):
+    with open(path, 'r') as file:
+        return yaml.safe_load(file)
+def save_yaml(dictionnaire, chemin):
+    with open(chemin, 'w') as file:
+        yaml.dump(dictionnaire, file, default_flow_style=False)
+
+def save_params_for_all_widgets(pi_widgets):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # On appelle la méthode save_params pour tous les widgets PI
+            for widget in pi_widgets:
+                if hasattr(widget, 'save_params'):
+                    widget.save_params()
+
+            # Appeler la méthode originale sans argument supplémentaire
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
+
+
+
+
+
+
