@@ -4,7 +4,6 @@ from napari.qt.threading import thread_worker
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QSpinBox, QLabel, QLineEdit, QRadioButton, \
     QGroupBox, QSlider, QApplication
 from PyQt5.QtCore import Qt
-from Nmm import NMM
 from simple_galvo import set_galvos_position
 from app_functions import load_yaml, save_yaml, CONFIG, save_params_for_all_widgets
 from pi_control import PiController

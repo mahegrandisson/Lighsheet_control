@@ -1,8 +1,6 @@
-from pickletools import long1
 import numpy as np
 from tifffile import tifffile
 from ome_types import from_xml
-from simple_galvo import set_galvos_position
 from pi_control import PiController
 from PyDAQmx import Task
 import PyDAQmx
@@ -12,7 +10,6 @@ from pymmcore_plus import CMMCorePlus
 from pipython import PILogger
 import logging
 from skimage.io import imsave
-import ctypes
 from napari.qt.threading import thread_worker
 
 def scan(pi_controller: PiController,device_id: int,startZ: float, stopZ: float,startY: float, stopY: float,plane_number: int, frequency: float,sample_number_per_sine_period: int,duration: float=120):

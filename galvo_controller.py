@@ -2,7 +2,6 @@ import PyDAQmx
 import numpy as np
 from PyDAQmx import Task
 import time
-from pulsing import generate_range_of_values
 
 def generate_sine_wave( offset : float,amp = 0, freq=1, samples_per_buffer=750, cycles_per_buffer=15, sampling_rate=10000):
     """
