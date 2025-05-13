@@ -50,7 +50,7 @@ if __name__ == "__main__":
     sl_widget = SlidesWidget(galvo1_val, galvo2_val)
     app.window.add_dock_widget(sl_widget, area='left')
 
-    sc_widget = ScansWidget(pi_controller, core)
+    sc_widget = ScanBTNWidget(pi_controller, core)
     app.window.add_dock_widget(sc_widget, area='left')
 
     napari.run()
