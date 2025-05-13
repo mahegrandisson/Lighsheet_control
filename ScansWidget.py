@@ -3,13 +3,10 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit
 from PyQt5.QtCore import Qt
 import napari
 import os
-
 from pymmcore_plus import CMMCorePlus
-
 from PiController import PiController
-
-
 from pi_ni_scan import brillouin_scan
+from app_functions import B_PARAMS
 
 
 class ScansWidget(QWidget):
@@ -50,7 +47,7 @@ class BrillouinScanWidget(QWidget):
         self.hidden = True
         self.pi_controller = pi_controller
         self.core = core
-        self.filepath = "config/brillouin_params.yaml"
+        self.filepath = B_PARAMS
         self.start_z, self.end_z = 16.99, 16.99
         self.start_x, self.end_x = 8, 8
         self.start_x, self.end_x = 8, 8

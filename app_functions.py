@@ -2,8 +2,9 @@ import yaml
 from PiController import PiController
 from pymmcore_plus import CMMCorePlus
 import napari
-
-CONFIG ="config/galvo_pi_config.yaml"
+CONFIG_FOLDER = "config/"
+B_PARAMS = CONFIG_FOLDER + "brillouin_params.yaml"
+CONFIG = CONFIG_FOLDER + "galvo_pi_config.yaml"
 SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
 galvo1_val = 0
 galvo2_val = 0

@@ -12,6 +12,7 @@ import logging
 from skimage.io import imsave
 from napari.qt.threading import thread_worker
 
+
 def scan(pi_controller: PiController,device_id: int,startZ: float, stopZ: float,startY: float, stopY: float,plane_number: int, frequency: float,sample_number_per_sine_period: int,duration: float=120):
 
 
