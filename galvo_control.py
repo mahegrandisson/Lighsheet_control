@@ -5,13 +5,6 @@ from PyDAQmx import Task
 
 
 def set_galvos_position(value:float,galvo_id: int):
-    """
-    Fonction pour envoyer des valeurs à deux galvanomètres en utilisant PyDAQmx.
-
-    :param start1: Valeur pour le Galvo 1 (en Volts).
-    :param start2: Valeur pour le Galvo 2 (en Volts).
-    """
-    #print(galvo_id)
     task = Task()
     if galvo_id in [1,2]:
         if galvo_id==1:

@@ -4,17 +4,6 @@ from PyDAQmx import Task
 import time
 
 def generate_sine_wave( offset : float,amp = 0, freq=1, samples_per_buffer=750, cycles_per_buffer=15, sampling_rate=10000):
-    """
-    Fonction pour générer une onde sinusoïdale avec un offset en mètres.
-
-    :param amp: Amplitude de l'onde en mètres (m)
-    :param freq: Fréquence de l'onde en Hz
-    :param offset: Offset en mètres (m)
-    :param samples_per_buffer: Nombre d'échantillons par buffer
-    :param cycles_per_buffer: Nombre de cycles dans chaque buffer
-    :param sampling_rate: Taux d'échantillonnage (en Hz)
-    :return: Tableau de la forme d'onde à envoyer
-    """
 
     # Calcul de la période et du temps entre les échantillons
     period = 1 / freq  # Période de l'onde en secondes

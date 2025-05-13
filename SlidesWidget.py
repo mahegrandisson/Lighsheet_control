@@ -2,7 +2,7 @@
 import napari
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QSlider
 from PyQt5.QtCore import Qt
-from GalvoController import *
+from galvo_control import *
 from app_functions import *
 
 pi_widgets = []
