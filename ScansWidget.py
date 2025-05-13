@@ -1,5 +1,5 @@
 import yaml
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, QFormLayout, QGridLayout, QFileDialog, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, QFormLayout, QGridLayout, QFileDialog, QHBoxLayout, QComboBox
 from PyQt5.QtCore import Qt
 import napari
 import os
@@ -9,10 +9,10 @@ from pi_ni_scan import brillouin_scan
 from app_functions import B_PARAMS
 
 
-class ScansWidget(QWidget):
+class ScanBTNWidget(QWidget):
     def __init__(self, pi_controller, core):
         super().__init__()
-        self.brillouin_widget = BrillouinScanWidget(pi_controller,core)
+        self.brillouin_widget = ScanWidget(pi_controller,core)
         self.setStyleSheet("background-color: rgb(38,41,48);")
         self.setWindowTitle("Scan Widget")
         self.setGeometry(100, 100, 200, 100)
@@ -41,12 +41,17 @@ class ScansWidget(QWidget):
             widget.show()
             widget.hidden = False
 
-class BrillouinScanWidget(QWidget):
+class ScanWidget(QWidget):
     def __init__(self, pi_controller : PiController, core : CMMCorePlus):
         super().__init__()
         self.hidden = True
         self.pi_controller = pi_controller
         self.core = core
+        self.cameras = []
+        for dev in self.core.getLoadedDevices():
+            if "cam".upper() in dev or "cam" in dev or "orca" in dev:
+                self.cameras.append(dev)
+
         self.filepath = B_PARAMS
         self.start_z, self.end_z = 16.99, 16.99
         self.start_x, self.end_x = 8, 8
@@ -83,6 +88,9 @@ class BrillouinScanWidget(QWidget):
         self.y_step_input = QLineEdit()
         self.z_step_input = QLineEdit()
         self.exposure_input = QLineEdit()
+        self.camera_input = QComboBox()
+        self.camera_input.addItems(self.cameras)
+        self.camera_input.setCurrentText(self.core.getCameraDevice())
 
 
         self.info_label = QLabel()
@@ -121,7 +129,9 @@ class BrillouinScanWidget(QWidget):
         form_layout.addRow("X Step (µm):", self.x_step_input)
         form_layout.addRow("Y Step (µm):", self.y_step_input)
         form_layout.addRow("Z Step (µm):", self.z_step_input)
+        form_layout.addRow("camera:", self.camera_input)
         form_layout.addRow("exposure (ms):", self.exposure_input)
+
 
 
         self.save_btn = QPushButton()
@@ -215,7 +225,9 @@ class BrillouinScanWidget(QWidget):
                         },
                         "folder": self.path_input.text(),
 
-                        "exposure": float(self.exposure_input.text())
+                        "exposure": float(self.exposure_input.text()),
+
+                        "camera": self.camera_input.currentText()
                     }
 
                     with open(self.filepath, "w") as file:
@@ -236,7 +248,7 @@ class BrillouinScanWidget(QWidget):
             with open(self.filepath, "r") as file:
                 params = yaml.safe_load(file)
 
-            # Charger les coins
+
             self.br_x_input.setText(str(params["bottom_right_corner"]["x"]))
             self.br_y_input.setText(str(params["bottom_right_corner"]["y"]))
             self.br_z_input.setText(str(params["bottom_right_corner"]["z"]))
@@ -245,14 +257,16 @@ class BrillouinScanWidget(QWidget):
             self.ul_y_input.setText(str(params["upper_left_corner"]["y"]))
             self.ul_z_input.setText(str(params["upper_left_corner"]["z"]))
 
-            # Charger les pas
+
             self.x_step_input.setText(str(params["steps"]["x_step"]))
             self.y_step_input.setText(str(params["steps"]["y_step"]))
             self.z_step_input.setText(str(params["steps"]["z_step"]))
 
             self.path_input.setText(params["folder"])
 
-            self.exposure_input.setText(params["exposure"])
+            self.camera_input.setCurrentText(params["camera"])
+
+            self.exposure_input.setText(str(params["exposure"]))
 
             self.disp_label.setText("Parameters loaded.")
 
@@ -274,6 +288,13 @@ class BrillouinScanWidget(QWidget):
             s_x = float(self.x_step_input.text())
             s_y = float(self.y_step_input.text())
             s_z = float(self.z_step_input.text())
+
+            if self.camera_input:
+                cam = self.camera_input.currentText()
+                self.core.setCameraDevice(cam)
+            else:
+                self.core.setCameraDevice(self.cameras[0])
+
 
             self.disp_label.setText("running and computing...")
             worker = brillouin_scan(self.pi_controller, self.core, btc_x, btc_y, btc_z, ulc_x, ulc_y, ulc_z, s_x, s_y, s_z, self.path_input.text())
@@ -298,11 +319,10 @@ class BrillouinScanWidget(QWidget):
 
 if __name__=="__main__":
     core = CMMCorePlus()
-    core.loadSystemConfiguration("C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg")
-    core.setExposure(20)
+    core.loadSystemConfiguration("C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg")
     pi_controller = PiController()
     app = napari.Viewer()
-    widget = ScansWidget(pi_controller, core)
+    widget = ScanBTNWidget(pi_controller, core)
     app.window.add_dock_widget(widget, area='left')
     napari.run()
 

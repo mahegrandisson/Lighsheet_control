@@ -1,6 +1,6 @@
 from PiControlWidget import PIControlWidget
 from SlidesWidget import SlidesWidget
-from ScansWidget import ScansWidget
+from ScansWidget import ScanBTNWidget
 from app_functions import *
 
 import napari

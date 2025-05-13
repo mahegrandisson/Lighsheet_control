@@ -2,7 +2,8 @@ bottom_right_corner:
   x: 6.0
   y: 5.0
   z: 10.0
-exposure: 10.0
+camera: orcaFlash
+exposure: 20.0
 folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images/TEST
 steps:
   x_step: 70.0
