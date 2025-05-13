@@ -2,13 +2,13 @@ bottom_right_corner:
   x: 6.0
   y: 5.0
   z: 10.0
-exposure: 50.0
+exposure: 10.0
 folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images/Brillouin_Tiff
 steps:
-  x_step: 1000.0
-  y_step: 1000.0
-  z_step: 1000.0
+  x_step: 50.0
+  y_step: 20.0
+  z_step: 70.0
 upper_left_corner:
-  x: 5.0
-  y: 7.0
-  z: 11.0
+  x: 6.3
+  y: 5.2
+  z: 10.5

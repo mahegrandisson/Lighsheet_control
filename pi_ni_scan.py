@@ -249,7 +249,7 @@ def read_tiff_img(img: str):
         metadata = tif.ome_metadata
         ome_dict = from_xml(metadata)
         #print(ome_dict.images[0].pixels.planes[0].position_x)
-    return  ome_dict.images[0]
+    return  ome_dict.images[0], image_data
 
 
 

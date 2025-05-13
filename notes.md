@@ -1,6 +1,12 @@
-12/05/2025.
+#Lighsheet_control
 
-git repo creation !
 
-name changes, scan is functionnal, useless lines deleted
+# 12/05/2025.
 
+git created !
+name changes, folder organization
+
+
+# 13/05/2025.
+
+3D plot, new Brillouin data
