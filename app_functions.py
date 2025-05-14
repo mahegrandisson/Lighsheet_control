@@ -21,12 +21,12 @@ pi_widgets = []
 
 
 def load_yaml(path: str):
-    with open(path, 'r') as file:
+    with open(path, "r") as file:
         return yaml.safe_load(file)
 
 
 def save_yaml(dictionnaire, chemin):
-    with open(chemin, 'w') as file:
+    with open(chemin, "w") as file:
         yaml.dump(dictionnaire, file, default_flow_style=False)
 
 
@@ -35,9 +35,8 @@ def save_params_for_all_widgets(pi_widgets):
         def wrapper(*args, **kwargs):
 
             for widget in pi_widgets:
-                if hasattr(widget, 'save_params'):
+                if hasattr(widget, "save_params"):
                     widget.save_params()
-
 
             return func(*args, **kwargs)
 

@@ -7,7 +7,6 @@ import napari
 from pymmcore_plus import CMMCorePlus
 
 
-
 if __name__ == "__main__":
     params = load_yaml(CONFIG)
 
@@ -38,19 +37,15 @@ if __name__ == "__main__":
             mini, maxi = 0.001, 16.999
 
         pi_widget = PIControlWidget(
-            pi_controller,
-            pi_vals[i - 1],
-            controller_id=i,
-            mini=mini,
-            maxi=maxi
+            pi_controller, pi_vals[i - 1], controller_id=i, mini=mini, maxi=maxi
         )
-        app.window.add_dock_widget(pi_widget, area='right')
+        app.window.add_dock_widget(pi_widget, area="right")
         pi_widgets.append(pi_widget)
 
     sl_widget = SlidesWidget(galvo1_val, galvo2_val)
-    app.window.add_dock_widget(sl_widget, area='left')
+    app.window.add_dock_widget(sl_widget, area="left")
 
     sc_widget = ScanBTNWidget(pi_controller, core)
-    app.window.add_dock_widget(sc_widget, area='left')
+    app.window.add_dock_widget(sc_widget, area="left")
 
     napari.run()

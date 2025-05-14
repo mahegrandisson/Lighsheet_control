@@ -13,7 +13,7 @@ class PiController:
 
             # Premier contrôleur principal pour la chaîne daisy
             c863 = GCSDevice()
-            c863.OpenUSBDaisyChain(description='0185500688')
+            c863.OpenUSBDaisyChain(description="0185500688")
             daisychain_id = c863.dcid
 
             # Connexion au premier appareil (déjà ouvert)

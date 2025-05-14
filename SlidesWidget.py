@@ -1,4 +1,3 @@
-
 import napari
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QSlider
 from PyQt5.QtCore import Qt
@@ -7,8 +6,9 @@ from app_functions import *
 
 pi_widgets = []
 
+
 class SlidesWidget(QWidget):
-    def __init__(self,galvo1_val: float, galvo2_val: float):
+    def __init__(self, galvo1_val: float, galvo2_val: float):
 
         super().__init__()
 
@@ -16,7 +16,7 @@ class SlidesWidget(QWidget):
         self.north_south_slider = QSlider(Qt.Horizontal)
         self.north_south_slider.setMinimum(-1500)
         self.north_south_slider.setMaximum(1500)
-        self.north_south_slider.setValue(-int(galvo2_val/0.001))
+        self.north_south_slider.setValue(-int(galvo2_val / 0.001))
         self.north_south_slider.setTickInterval(1)
         self.north_south_slider.setTickPosition(QSlider.TicksBelow)
         self.north_south_slider.valueChanged.connect(self.move_north_south)
@@ -24,7 +24,7 @@ class SlidesWidget(QWidget):
         self.east_west_slider = QSlider(Qt.Horizontal)
         self.east_west_slider.setMinimum(-50)
         self.east_west_slider.setMaximum(50)
-        self.east_west_slider.setValue(int(galvo1_val/0.001))
+        self.east_west_slider.setValue(int(galvo1_val / 0.001))
         self.east_west_slider.setTickInterval(1)
         self.east_west_slider.setTickPosition(QSlider.TicksBelow)
         self.east_west_slider.valueChanged.connect(self.move_east_west)
@@ -61,13 +61,11 @@ class SlidesWidget(QWidget):
             self.state_label.setText("Scanning...")
 
     def move_north_south(self):
-        """Déplacer le galvo nord-sud (axe Y)"""
         value = -self.north_south_slider.value() * 0.001
         set_galvos_position(value=value, galvo_id=2)
         self.north_south_label.setText(f"NORTH/SOUTH : {value:.3f} V")
 
     def move_east_west(self):
-        """Déplacer le galvo est-ouest (axe X)"""
         value = self.east_west_slider.value() * 0.001
         set_galvos_position(value=value, galvo_id=1)
         self.east_west_label.setText(f"EAST/WEST : {value:.3f} V")
@@ -90,12 +88,11 @@ class SlidesWidget(QWidget):
         save_yaml(config, CONFIG)
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     params = load_yaml(CONFIG)
     galvo1_val = float(params["galvo1_val"])
     galvo2_val = float(params["galvo2_val"])
     app = napari.Viewer()
-    widget = SlidesWidget(0,0)
-    app.window.add_dock_widget(widget, area='left')
+    widget = SlidesWidget(0, 0)
+    app.window.add_dock_widget(widget, area="left")
     napari.run()

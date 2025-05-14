@@ -1,5 +1,16 @@
 import yaml
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, QFormLayout, QGridLayout, QFileDialog, QHBoxLayout, QComboBox
+from PyQt5.QtWidgets import (
+    QWidget,
+    QPushButton,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QFormLayout,
+    QGridLayout,
+    QFileDialog,
+    QHBoxLayout,
+    QComboBox,
+)
 from PyQt5.QtCore import Qt
 import napari
 import os
@@ -12,19 +23,23 @@ from app_functions import B_PARAMS
 class ScanBTNWidget(QWidget):
     def __init__(self, pi_controller, core):
         super().__init__()
-        self.brillouin_widget = ScanWidget(pi_controller,core)
+        self.brillouin_widget = ScanWidget(pi_controller, core)
         self.setStyleSheet("background-color: rgb(38,41,48);")
         self.setWindowTitle("Scan Widget")
         self.setGeometry(100, 100, 200, 100)
         self.scan_button = QPushButton("Scan parameters", self)
-        self.scan_button.setStyleSheet("""
+        self.scan_button.setStyleSheet(
+            """
             background-color: rgb(180, 180, 180);
             color: black;
             font-size: 14px;
             padding: 5px;
             border-radius: 5px;
-        """)
-        self.scan_button.clicked.connect(lambda : self.toggle_widget(self.brillouin_widget))
+        """
+        )
+        self.scan_button.clicked.connect(
+            lambda: self.toggle_widget(self.brillouin_widget)
+        )
         layout = QVBoxLayout()
         layout.addWidget(self.scan_button, alignment=Qt.AlignCenter)
 
@@ -41,25 +56,34 @@ class ScanBTNWidget(QWidget):
             widget.show()
             widget.hidden = False
 
+
 class ScanWidget(QWidget):
-    def __init__(self, pi_controller : PiController, core : CMMCorePlus):
+    def __init__(self, pi_controller: PiController, core: CMMCorePlus):
         super().__init__()
         self.hidden = True
         self.pi_controller = pi_controller
         self.core = core
+
+        #define the system's available cameras
         self.cameras = []
         for dev in self.core.getLoadedDevices():
             if "cam".upper() in dev or "cam" in dev or "orca" in dev:
                 self.cameras.append(dev)
 
+        #where to save the scan params
         self.filepath = B_PARAMS
+
+        #safety init
         self.start_z, self.end_z = 16.99, 16.99
         self.start_x, self.end_x = 8, 8
         self.start_x, self.end_x = 8, 8
         self.start_y, self.end_y = 14, 14
+        
+        #display
         self.setWindowTitle("Scan parameters")
         self.setGeometry(0, 0, 800, 500)
-        self.setStyleSheet("""
+        self.setStyleSheet(
+            """
                     QWidget {
                         background-color: rgb(38,41,48);
                         color: white;
@@ -73,7 +97,8 @@ class ScanWidget(QWidget):
                     QLabel {
                         color: white;
                     }
-                """)
+                """
+        )
         self.setWindowFlags(Qt.Window)
 
         self.title_label = QLabel("Scan Parameters", self)
@@ -91,7 +116,6 @@ class ScanWidget(QWidget):
         self.camera_input = QComboBox()
         self.camera_input.addItems(self.cameras)
         self.camera_input.setCurrentText(self.core.getCameraDevice())
-
 
         self.info_label = QLabel()
         self.info_label.setText("4<=X<17   |   0<Y<17   |   8<=Z<17")
@@ -132,27 +156,25 @@ class ScanWidget(QWidget):
         form_layout.addRow("camera:", self.camera_input)
         form_layout.addRow("exposure (ms):", self.exposure_input)
 
-
-
         self.save_btn = QPushButton()
         self.save_btn.setText("Save Parameters")
-        self.save_btn.setStyleSheet("""
+        self.save_btn.setStyleSheet(
+            """
             background-color: rgb(180, 180, 180);
             color: black;
             font-size: 14px;
             padding: 5px;
             border-radius: 5px;
-        """)
-        self.save_btn.clicked.connect(lambda : self.save_parameters())
+        """
+        )
+        self.save_btn.clicked.connect(lambda: self.save_parameters())
 
         self.disp_label = QLabel()
         self.disp_label.setText("")
 
-
         self.run_btn = QPushButton()
         self.run_btn.setText("Run scan")
-        self.run_btn.clicked.connect(lambda : self.run_scan())
-
+        self.run_btn.clicked.connect(lambda: self.run_scan())
 
         self.info_label_2 = QLabel()
         self.info_label_2.setText("1µm <=step< 1000µm")
@@ -165,10 +187,10 @@ class ScanWidget(QWidget):
         self.browse_btn = QPushButton("Browse")
         self.browse_btn.setFixedWidth(80)
 
-        #connect to browse
+        # connect to browse
         self.browse_btn.clicked.connect(self.select_folder)
 
-        #horizontal layout
+        # horizontal layout
         layout = QHBoxLayout()
         layout.addWidget(self.folder_label)
         layout.addWidget(self.path_input)
@@ -176,8 +198,6 @@ class ScanWidget(QWidget):
         layout.addWidget(self.folder_prefix_label)
         layout.addWidget(self.folder_prefix_input)
         layout.setContentsMargins(0, 0, 0, 0)
-
-
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.title_label)
@@ -209,36 +229,28 @@ class ScanWidget(QWidget):
             s_y = float(self.y_step_input.text())
             s_z = float(self.z_step_input.text())
 
-            if 4<=btc_x<17 and 0<btc_y<17 and 8<=btc_z<17 and 4<=ulc_x<17 and 0<ulc_y<17 and 8<=ulc_z<17:
+            if (
+                4 <= btc_x < 17
+                and 0 < btc_y < 17
+                and 8 <= btc_z < 17
+                and 4 <= ulc_x < 17
+                and 0 < ulc_y < 17
+                and 8 <= ulc_z < 17
+            ):
 
-                    params = {
-                        "bottom_right_corner": {
-                            "x": btc_x,
-                            "y": btc_y,
-                            "z": btc_z
-                        },
-                        "upper_left_corner": {
-                            "x": ulc_x,
-                            "y": ulc_y,
-                            "z": ulc_z
-                        },
-                        "steps": {
-                            "x_step": s_x,
-                            "y_step": s_y,
-                            "z_step": s_z
-                        },
-                        "folder": self.path_input.text(),
+                params = {
+                    "bottom_right_corner": {"x": btc_x, "y": btc_y, "z": btc_z},
+                    "upper_left_corner": {"x": ulc_x, "y": ulc_y, "z": ulc_z},
+                    "steps": {"x_step": s_x, "y_step": s_y, "z_step": s_z},
+                    "folder": self.path_input.text(),
+                    "folder prefix": self.folder_prefix_input.text(),
+                    "exposure": float(self.exposure_input.text()),
+                    "camera": self.camera_input.currentText(),
+                }
 
-                        "folder prefix": self.folder_prefix_input.text(),
-
-                        "exposure": float(self.exposure_input.text()),
-
-                        "camera": self.camera_input.currentText()
-                    }
-
-                    with open(self.filepath, "w") as file:
-                        yaml.dump(params, file, default_flow_style=False)
-                    self.disp_label.setText("Parameters saved !")
+                with open(self.filepath, "w") as file:
+                    yaml.dump(params, file, default_flow_style=False)
+                self.disp_label.setText("Parameters saved !")
 
             else:
                 self.disp_label.setText("wrong parameter values")
@@ -254,7 +266,6 @@ class ScanWidget(QWidget):
             with open(self.filepath, "r") as file:
                 params = yaml.safe_load(file)
 
-
             self.br_x_input.setText(str(params["bottom_right_corner"]["x"]))
             self.br_y_input.setText(str(params["bottom_right_corner"]["y"]))
             self.br_z_input.setText(str(params["bottom_right_corner"]["z"]))
@@ -262,7 +273,6 @@ class ScanWidget(QWidget):
             self.ul_x_input.setText(str(params["upper_left_corner"]["x"]))
             self.ul_y_input.setText(str(params["upper_left_corner"]["y"]))
             self.ul_z_input.setText(str(params["upper_left_corner"]["z"]))
-
 
             self.x_step_input.setText(str(params["steps"]["x_step"]))
             self.y_step_input.setText(str(params["steps"]["y_step"]))
@@ -284,7 +294,7 @@ class ScanWidget(QWidget):
     def run_scan(self):
         try:
             self.core.setExposure(int(self.exposure_input.text()))
-            #if self.disp_label.text() == "Parameters saved !":
+            # if self.disp_label.text() == "Parameters saved !":
             btc_x = float(self.br_x_input.text())
             btc_y = float(self.br_y_input.text())
             btc_z = float(self.br_z_input.text())
@@ -303,22 +313,35 @@ class ScanWidget(QWidget):
             else:
                 self.core.setCameraDevice(self.cameras[0])
 
-
             self.disp_label.setText("running and computing...")
-            path = self.path_input.text()+ self.folder_prefix_input.text()
-            worker = brillouin_scan(self.pi_controller, self.core, btc_x, btc_y, btc_z, ulc_x, ulc_y, ulc_z, s_x, s_y, s_z, path)
+            path = self.path_input.text() + self.folder_prefix_input.text()
+            worker = brillouin_scan(
+                self.pi_controller,
+                self.core,
+                btc_x,
+                btc_y,
+                btc_z,
+                ulc_x,
+                ulc_y,
+                ulc_z,
+                s_x,
+                s_y,
+                s_z,
+                path,
+            )
             worker.start()
             worker.signals.finished.connect(lambda: self.scan_state(0))
 
-
-            #else:
+            # else:
             #    self.disp_label.setText("Please save parameters first")
         except ValueError:
             self.disp_label.setText("Invalid parameters")
 
-    def scan_state(self,state: int):
-        if state==0:
-            self.disp_label.setText("Scan done ! images saved at " + self.path_input.text())
+    def scan_state(self, state: int):
+        if state == 0:
+            self.disp_label.setText(
+                "Scan done ! images saved at " + self.path_input.text()
+            )
 
     def select_folder(self):
         folder = QFileDialog.getExistingDirectory(self, "Select parent Folder")
@@ -326,12 +349,14 @@ class ScanWidget(QWidget):
             self.path_input.setText(folder)
         self.show()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     core = CMMCorePlus()
-    core.loadSystemConfiguration("C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg")
+    core.loadSystemConfiguration(
+        "C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
+    )
     pi_controller = PiController()
     app = napari.Viewer()
     widget = ScanBTNWidget(pi_controller, core)
-    app.window.add_dock_widget(widget, area='left')
+    app.window.add_dock_widget(widget, area="left")
     napari.run()
-
