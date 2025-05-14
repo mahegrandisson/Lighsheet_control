@@ -6,7 +6,7 @@ git created ! name changes, folder organization
 # 13/05/2025.
 3D plot, new Brillouin data, cube image saved at images/doc
 
-#14/05/2025.
+# 14/05/2025.
 
 Trying to image borosillicate in oil. Got some Brillouin signal. however, it is weak and movement within the sample support is limited. Need to find a better way to hold the glass (borosillicate). We could try to submerge the whole chamber with oil but this requires a lot of oil. Or we could remove de water chamber. 
 
