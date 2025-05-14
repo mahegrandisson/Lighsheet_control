@@ -1,6 +1,8 @@
 import PyDAQmx
 import numpy as np
-from PyDAQmx import Task
+from PyDAQmx import (
+    Task,
+)
 import time
 
 
@@ -29,7 +31,12 @@ def generate_sine_wave(
     total_time = cycles_per_buffer * period  # Temps total pour les cycles
 
     # Créer un vecteur de temps
-    time_array = np.linspace(0, total_time, samples_per_buffer, endpoint=False)
+    time_array = np.linspace(
+        0,
+        total_time,
+        samples_per_buffer,
+        endpoint=False,
+    )
 
     # Générer la sine wave
     sine_wave = amp * np.sin(2 * np.pi * freq * time_array) + offset
@@ -37,7 +44,13 @@ def generate_sine_wave(
     return sine_wave
 
 
-def scan_between_galvos(start1, end1, start2, end2, steps):
+def scan_between_galvos(
+    start1,
+    end1,
+    start2,
+    end2,
+    steps,
+):
     """
     Effectue un balayage entre les bornes des deux galvanomètres.
     Pour chaque point de Galvo1, on parcourt toute la plage de Galvo2.
@@ -51,28 +64,58 @@ def scan_between_galvos(start1, end1, start2, end2, steps):
     # Créer les tâches pour les deux galvanomètres
     task1 = Task()
     task1.CreateAOVoltageChan(
-        "Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None
+        "Dev1/ao0",
+        "",
+        start1,
+        end1,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
     )
 
     task2 = Task()
     task2.CreateAOVoltageChan(
-        "Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None
+        "Dev1/ao1",
+        "",
+        start2,
+        end2,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
     )
 
-    galvo1_values = np.linspace(start1, end1, steps)
-    galvo2_values = np.linspace(start2, end2, steps)
+    galvo1_values = np.linspace(
+        start1,
+        end1,
+        steps,
+    )
+    galvo2_values = np.linspace(
+        start2,
+        end2,
+        steps,
+    )
 
     # Balayage 2D
     for value1 in galvo1_values:
         print(value1)
         sine_wave_1 = generate_sine_wave(offset=value1)
         task1.WriteAnalogF64(
-            1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, sine_wave_1, None, None
+            1,
+            True,
+            10.0,
+            PyDAQmx.DAQmx_Val_GroupByChannel,
+            sine_wave_1,
+            None,
+            None,
         )
         for value2 in galvo2_values:
             sine_wave_2 = generate_sine_wave(offset=value2)
             task2.WriteAnalogF64(
-                1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, sine_wave_2, None, None
+                1,
+                True,
+                10.0,
+                PyDAQmx.DAQmx_Val_GroupByChannel,
+                sine_wave_2,
+                None,
+                None,
             )
             time.sleep(0.5)
 
@@ -93,20 +136,33 @@ if __name__ == "__main__":
         PyDAQmx.DAQmx_Val_Volts,
         None,
     )
-    task1.CfgSampClkTiming("", 1000.0, Task.CfgSampClkTiming.SampTimingMode_Internal)
+    task1.CfgSampClkTiming(
+        "",
+        1000.0,
+        Task.CfgSampClkTiming.SampTimingMode_Internal,
+    )
     task1.Start()
 
     # Lire les données
     try:
         while True:
             # Lire un échantillon à la fois (ajustez la taille du buffer si nécessaire)
-            data = np.zeros(1, dtype=np.float64)
+            data = np.zeros(
+                1,
+                dtype=np.float64,
+            )
             task1.ReadAnalogF64(
-                1, 10.0, 0, data
+                1,
+                10.0,
+                0,
+                data,
             )  # Lire un échantillon avec un timeout de 10 secondes
 
             # Afficher la valeur lue
-            print("Valeur lue (V) : ", data[0])
+            print(
+                "Valeur lue (V) : ",
+                data[0],
+            )
 
             # Délai avant la prochaine lecture (ajustez selon vos besoins)
             time.sleep(0.1)

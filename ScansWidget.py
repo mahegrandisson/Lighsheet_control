@@ -11,23 +11,48 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QComboBox,
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import (
+    Qt,
+)
 import napari
 import os
-from pymmcore_plus import CMMCorePlus
-from PiController import PiController
-from pi_ni_scan import brillouin_scan
-from app_functions import B_PARAMS
+from pymmcore_plus import (
+    CMMCorePlus,
+)
+from PiController import (
+    PiController,
+)
+from pi_ni_scan import (
+    brillouin_scan,
+)
+from app_functions import (
+    B_PARAMS,
+)
 
 
 class ScanBTNWidget(QWidget):
-    def __init__(self, pi_controller, core):
+    def __init__(
+        self,
+        pi_controller,
+        core,
+    ):
         super().__init__()
-        self.brillouin_widget = ScanWidget(pi_controller, core)
+        self.brillouin_widget = ScanWidget(
+            pi_controller,
+            core,
+        )
         self.setStyleSheet("background-color: rgb(38,41,48);")
         self.setWindowTitle("Scan Widget")
-        self.setGeometry(100, 100, 200, 100)
-        self.scan_button = QPushButton("Scan parameters", self)
+        self.setGeometry(
+            100,
+            100,
+            200,
+            100,
+        )
+        self.scan_button = QPushButton(
+            "Scan parameters",
+            self,
+        )
         self.scan_button.setStyleSheet(
             """
             background-color: rgb(180, 180, 180);
@@ -41,47 +66,89 @@ class ScanBTNWidget(QWidget):
             lambda: self.toggle_widget(self.brillouin_widget)
         )
         layout = QVBoxLayout()
-        layout.addWidget(self.scan_button, alignment=Qt.AlignCenter)
+        layout.addWidget(
+            self.scan_button,
+            alignment=Qt.AlignCenter,
+        )
 
         self.setLayout(layout)
 
-    def toggle_widget(self, widget):
+    def toggle_widget(
+        self,
+        widget,
+    ):
 
         if widget.hidden == False:
             widget.hide()
             widget.hidden = True
         else:
 
-            widget.move(self.x() + self.width(), self.y() + 50)
+            widget.move(
+                self.x() + self.width(),
+                self.y() + 50,
+            )
             widget.show()
             widget.hidden = False
 
 
 class ScanWidget(QWidget):
-    def __init__(self, pi_controller: PiController, core: CMMCorePlus):
+    def __init__(
+        self,
+        pi_controller: PiController,
+        core: CMMCorePlus,
+    ):
         super().__init__()
         self.hidden = True
         self.pi_controller = pi_controller
         self.core = core
 
-        #define the system's available cameras
+        # define the system's available cameras
         self.cameras = []
         for dev in self.core.getLoadedDevices():
             if "cam".upper() in dev or "cam" in dev or "orca" in dev:
                 self.cameras.append(dev)
 
-        #where to save the scan params
+        # where to save the scan params
         self.filepath = B_PARAMS
 
-        #safety init
-        self.start_z, self.end_z = 16.99, 16.99
-        self.start_x, self.end_x = 8, 8
-        self.start_x, self.end_x = 8, 8
-        self.start_y, self.end_y = 14, 14
-        
-        #display
+        # safety init
+        (
+            self.start_z,
+            self.end_z,
+        ) = (
+            16.99,
+            16.99,
+        )
+        (
+            self.start_x,
+            self.end_x,
+        ) = (
+            8,
+            8,
+        )
+        (
+            self.start_x,
+            self.end_x,
+        ) = (
+            8,
+            8,
+        )
+        (
+            self.start_y,
+            self.end_y,
+        ) = (
+            14,
+            14,
+        )
+
+        # display
         self.setWindowTitle("Scan parameters")
-        self.setGeometry(0, 0, 800, 500)
+        self.setGeometry(
+            0,
+            0,
+            800,
+            500,
+        )
         self.setStyleSheet(
             """
                     QWidget {
@@ -101,7 +168,10 @@ class ScanWidget(QWidget):
         )
         self.setWindowFlags(Qt.Window)
 
-        self.title_label = QLabel("Scan Parameters", self)
+        self.title_label = QLabel(
+            "Scan Parameters",
+            self,
+        )
         self.title_label.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
 
@@ -123,38 +193,109 @@ class ScanWidget(QWidget):
 
         grid_layout = QGridLayout()
 
-        grid_layout.addWidget(QLabel("Bottom Right Cube Corner:"), 0, 0)
+        grid_layout.addWidget(
+            QLabel("Bottom Right Cube Corner:"),
+            0,
+            0,
+        )
 
-        grid_layout.addWidget(QLabel("X (mm):"), 0, 1)
+        grid_layout.addWidget(
+            QLabel("X (mm):"),
+            0,
+            1,
+        )
         self.br_x_input = QLineEdit()
-        grid_layout.addWidget(self.br_x_input, 0, 2)
+        grid_layout.addWidget(
+            self.br_x_input,
+            0,
+            2,
+        )
 
-        grid_layout.addWidget(QLabel("Y (mm):"), 0, 3)
+        grid_layout.addWidget(
+            QLabel("Y (mm):"),
+            0,
+            3,
+        )
         self.br_y_input = QLineEdit()
-        grid_layout.addWidget(self.br_y_input, 0, 4)
+        grid_layout.addWidget(
+            self.br_y_input,
+            0,
+            4,
+        )
 
-        grid_layout.addWidget(QLabel("Z (mm):"), 0, 5)
+        grid_layout.addWidget(
+            QLabel("Z (mm):"),
+            0,
+            5,
+        )
         self.br_z_input = QLineEdit()
-        grid_layout.addWidget(self.br_z_input, 0, 6)
+        grid_layout.addWidget(
+            self.br_z_input,
+            0,
+            6,
+        )
 
-        grid_layout.addWidget(QLabel("Upper Left Cube Corner:"), 1, 0)
+        grid_layout.addWidget(
+            QLabel("Upper Left Cube Corner:"),
+            1,
+            0,
+        )
 
-        grid_layout.addWidget(QLabel("X (mm):"), 1, 1)
+        grid_layout.addWidget(
+            QLabel("X (mm):"),
+            1,
+            1,
+        )
         self.ul_x_input = QLineEdit()
-        grid_layout.addWidget(self.ul_x_input, 1, 2)
+        grid_layout.addWidget(
+            self.ul_x_input,
+            1,
+            2,
+        )
 
-        grid_layout.addWidget(QLabel("Y (mm):"), 1, 3)
+        grid_layout.addWidget(
+            QLabel("Y (mm):"),
+            1,
+            3,
+        )
         self.ul_y_input = QLineEdit()
-        grid_layout.addWidget(self.ul_y_input, 1, 4)
+        grid_layout.addWidget(
+            self.ul_y_input,
+            1,
+            4,
+        )
 
-        grid_layout.addWidget(QLabel("Z (mm):"), 1, 5)
+        grid_layout.addWidget(
+            QLabel("Z (mm):"),
+            1,
+            5,
+        )
         self.ul_z_input = QLineEdit()
-        grid_layout.addWidget(self.ul_z_input, 1, 6)
-        form_layout.addRow("X Step (µm):", self.x_step_input)
-        form_layout.addRow("Y Step (µm):", self.y_step_input)
-        form_layout.addRow("Z Step (µm):", self.z_step_input)
-        form_layout.addRow("camera:", self.camera_input)
-        form_layout.addRow("exposure (ms):", self.exposure_input)
+        grid_layout.addWidget(
+            self.ul_z_input,
+            1,
+            6,
+        )
+        form_layout.addRow(
+            "X Step (µm):",
+            self.x_step_input,
+        )
+        form_layout.addRow(
+            "Y Step (µm):",
+            self.y_step_input,
+        )
+        form_layout.addRow(
+            "Z Step (µm):",
+            self.z_step_input,
+        )
+        form_layout.addRow(
+            "camera:",
+            self.camera_input,
+        )
+        form_layout.addRow(
+            "exposure (ms):",
+            self.exposure_input,
+        )
 
         self.save_btn = QPushButton()
         self.save_btn.setText("Save Parameters")
@@ -197,7 +338,12 @@ class ScanWidget(QWidget):
         layout.addWidget(self.browse_btn)
         layout.addWidget(self.folder_prefix_label)
         layout.addWidget(self.folder_prefix_input)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.title_label)
@@ -213,7 +359,9 @@ class ScanWidget(QWidget):
 
         self.load_parameters()
 
-    def save_parameters(self):
+    def save_parameters(
+        self,
+    ):
 
         try:
 
@@ -239,17 +387,36 @@ class ScanWidget(QWidget):
             ):
 
                 params = {
-                    "bottom_right_corner": {"x": btc_x, "y": btc_y, "z": btc_z},
-                    "upper_left_corner": {"x": ulc_x, "y": ulc_y, "z": ulc_z},
-                    "steps": {"x_step": s_x, "y_step": s_y, "z_step": s_z},
+                    "bottom_right_corner": {
+                        "x": btc_x,
+                        "y": btc_y,
+                        "z": btc_z,
+                    },
+                    "upper_left_corner": {
+                        "x": ulc_x,
+                        "y": ulc_y,
+                        "z": ulc_z,
+                    },
+                    "steps": {
+                        "x_step": s_x,
+                        "y_step": s_y,
+                        "z_step": s_z,
+                    },
                     "folder": self.path_input.text(),
                     "folder prefix": self.folder_prefix_input.text(),
                     "exposure": float(self.exposure_input.text()),
                     "camera": self.camera_input.currentText(),
                 }
 
-                with open(self.filepath, "w") as file:
-                    yaml.dump(params, file, default_flow_style=False)
+                with open(
+                    self.filepath,
+                    "w",
+                ) as file:
+                    yaml.dump(
+                        params,
+                        file,
+                        default_flow_style=False,
+                    )
                 self.disp_label.setText("Parameters saved !")
 
             else:
@@ -258,12 +425,17 @@ class ScanWidget(QWidget):
         except ValueError:
             self.disp_label.setText("Parameters must be float")
 
-    def load_parameters(self):
+    def load_parameters(
+        self,
+    ):
         if not os.path.exists(self.filepath):
             return
 
         try:
-            with open(self.filepath, "r") as file:
+            with open(
+                self.filepath,
+                "r",
+            ) as file:
                 params = yaml.safe_load(file)
 
             self.br_x_input.setText(str(params["bottom_right_corner"]["x"]))
@@ -291,7 +463,9 @@ class ScanWidget(QWidget):
         except Exception as e:
             self.disp_label.setText(f"Failed to load parameters: {e}")
 
-    def run_scan(self):
+    def run_scan(
+        self,
+    ):
         try:
             self.core.setExposure(int(self.exposure_input.text()))
             # if self.disp_label.text() == "Parameters saved !":
@@ -337,14 +511,22 @@ class ScanWidget(QWidget):
         except ValueError:
             self.disp_label.setText("Invalid parameters")
 
-    def scan_state(self, state: int):
+    def scan_state(
+        self,
+        state: int,
+    ):
         if state == 0:
             self.disp_label.setText(
                 "Scan done ! images saved at " + self.path_input.text()
             )
 
-    def select_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "Select parent Folder")
+    def select_folder(
+        self,
+    ):
+        folder = QFileDialog.getExistingDirectory(
+            self,
+            "Select parent Folder",
+        )
         if folder:
             self.path_input.setText(folder)
         self.show()
@@ -357,6 +539,12 @@ if __name__ == "__main__":
     )
     pi_controller = PiController()
     app = napari.Viewer()
-    widget = ScanBTNWidget(pi_controller, core)
-    app.window.add_dock_widget(widget, area="left")
+    widget = ScanBTNWidget(
+        pi_controller,
+        core,
+    )
+    app.window.add_dock_widget(
+        widget,
+        area="left",
+    )
     napari.run()

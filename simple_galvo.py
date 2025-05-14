@@ -1,9 +1,14 @@
 import PyDAQmx
 import numpy as np
-from PyDAQmx import Task
+from PyDAQmx import (
+    Task,
+)
 
 
-def set_galvos_position(start1, start2):
+def set_galvos_position(
+    start1,
+    start2,
+):
     """
     Fonction pour envoyer des valeurs à deux galvanomètres en utilisant PyDAQmx.
 
@@ -14,22 +19,50 @@ def set_galvos_position(start1, start2):
         # Créer les tâches pour les deux galvanomètres
         task1 = Task()
         task1.CreateAOVoltageChan(
-            "Dev1/ao0", "", start1, start1 + 0.01, PyDAQmx.DAQmx_Val_Volts, None
+            "Dev1/ao0",
+            "",
+            start1,
+            start1 + 0.01,
+            PyDAQmx.DAQmx_Val_Volts,
+            None,
         )
 
         task2 = Task()
         task2.CreateAOVoltageChan(
-            "Dev1/ao1", "", start2, start2 + 0.01, PyDAQmx.DAQmx_Val_Volts, None
+            "Dev1/ao1",
+            "",
+            start2,
+            start2 + 0.01,
+            PyDAQmx.DAQmx_Val_Volts,
+            None,
         )
 
-        data1 = np.array([start1], dtype=np.float64)
-        data2 = np.array([start2], dtype=np.float64)
+        data1 = np.array(
+            [start1],
+            dtype=np.float64,
+        )
+        data2 = np.array(
+            [start2],
+            dtype=np.float64,
+        )
 
         task1.WriteAnalogF64(
-            1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, data1, None, None
+            1,
+            True,
+            10.0,
+            PyDAQmx.DAQmx_Val_GroupByChannel,
+            data1,
+            None,
+            None,
         )
         task2.WriteAnalogF64(
-            1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, data2, None, None
+            1,
+            True,
+            10.0,
+            PyDAQmx.DAQmx_Val_GroupByChannel,
+            data2,
+            None,
+            None,
         )
 
         # Fermer les tâches après l'écriture
@@ -46,4 +79,7 @@ def set_galvos_position(start1, start2):
 
 if __name__ == "__main__":
     print("go")
-    set_galvos_position(0, 0.0)
+    set_galvos_position(
+        0,
+        0.0,
+    )

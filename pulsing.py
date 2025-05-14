@@ -1,15 +1,28 @@
 import time
 import PyDAQmx
-from PyDAQmx import Task
+from PyDAQmx import (
+    Task,
+)
 import numpy as np
-from simple_galvo import set_galvos_position
+from simple_galvo import (
+    set_galvos_position,
+)
 
 
 def generate_sin_wave(
-    start_value, end_value, frequency, duration: float, sampling_rate=1000
+    start_value,
+    end_value,
+    frequency,
+    duration: float,
+    sampling_rate=1000,
 ):
 
-    t = np.linspace(0, duration, sampling_rate * duration, endpoint=False)
+    t = np.linspace(
+        0,
+        duration,
+        sampling_rate * duration,
+        endpoint=False,
+    )
 
     amplitude = (start_value - end_value) / 2
 
@@ -37,13 +50,36 @@ def fast_fluo(
         step_cam,
         step_cam,
     )
-    taskCAM.CfgImplicitTiming(PyDAQmx.DAQmx_Val_ContSamps, 0)
-    taskCAM.CfgDigEdgeStartTrig("/Dev1/PFI12", PyDAQmx.DAQmx_Val_Rising)
+    taskCAM.CfgImplicitTiming(
+        PyDAQmx.DAQmx_Val_ContSamps,
+        0,
+    )
+    taskCAM.CfgDigEdgeStartTrig(
+        "/Dev1/PFI12",
+        PyDAQmx.DAQmx_Val_Rising,
+    )
 
     taskG = Task()
-    taskG.CreateAOVoltageChan("Dev1/ao0", "", -10, 10, PyDAQmx.DAQmx_Val_Volts, None)
-    taskG.CreateAOVoltageChan("Dev1/ao1", "", -10, 10, PyDAQmx.DAQmx_Val_Volts, None)
-    taskG.CfgDigEdgeStartTrig("/Dev1/PFI12", PyDAQmx.DAQmx_Val_Rising)
+    taskG.CreateAOVoltageChan(
+        "Dev1/ao0",
+        "",
+        -10,
+        10,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
+    )
+    taskG.CreateAOVoltageChan(
+        "Dev1/ao1",
+        "",
+        -10,
+        10,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
+    )
+    taskG.CfgDigEdgeStartTrig(
+        "/Dev1/PFI12",
+        PyDAQmx.DAQmx_Val_Rising,
+    )
 
     samples_per_period = sample_number_per_sine_period
     sample_rate = samples_per_period * frequency
@@ -67,24 +103,58 @@ def fast_fluo(
         step_val,
         step_val,
     )
-    task_ms.CfgImplicitTiming(PyDAQmx.DAQmx_Val_ContSamps, 1)
+    task_ms.CfgImplicitTiming(
+        PyDAQmx.DAQmx_Val_ContSamps,
+        1,
+    )
 
-    wave_2 = generate_sin_wave(-0.5, 0.5, frequency * 10, duration, sample_rate)
-    dataG = np.zeros((len(wave_2), 2))
+    wave_2 = generate_sin_wave(
+        -0.5,
+        0.5,
+        frequency * 10,
+        duration,
+        sample_rate,
+    )
+    dataG = np.zeros(
+        (
+            len(wave_2),
+            2,
+        )
+    )
 
     period_duration = int(len(wave_2) * time_per_period / duration)
-    wave_1 = np.linspace(sine_start, sine_stop, len(wave_2))
+    wave_1 = np.linspace(
+        sine_start,
+        sine_stop,
+        len(wave_2),
+    )
 
-    for i in range(0, len(wave_1), period_duration):
+    for i in range(
+        0,
+        len(wave_1),
+        period_duration,
+    ):
         wave_1[i : i + period_duration] = wave_1[i]
 
-    dataG[:, 0] = wave_1
-    dataG[:, 1] = wave_2
+    dataG[
+        :,
+        0,
+    ] = wave_1
+    dataG[
+        :,
+        1,
+    ] = wave_2
 
     # tm = time.time()
 
     taskG.WriteAnalogF64(
-        len(wave_2), False, 10.0, PyDAQmx.DAQmx_Val_GroupByScanNumber, dataG, None, None
+        len(wave_2),
+        False,
+        10.0,
+        PyDAQmx.DAQmx_Val_GroupByScanNumber,
+        dataG,
+        None,
+        None,
     )
     taskG.StartTask()
     taskCAM.StartTask()
@@ -100,7 +170,10 @@ def fast_fluo(
     taskG.ClearTask()
     taskCAM.StopTask()
     taskCAM.ClearTask()
-    set_galvos_position(0, 0)
+    set_galvos_position(
+        0,
+        0,
+    )
 
 
 if __name__ == "__main__":
@@ -110,5 +183,9 @@ if __name__ == "__main__":
     sine_start = -0.04
     sine_stop = 0.05
     fast_fluo(
-        frequency, duration, sine_start, sine_stop, sample_number_per_sine_period=10000
+        frequency,
+        duration,
+        sine_start,
+        sine_stop,
+        sample_number_per_sine_period=10000,
     )

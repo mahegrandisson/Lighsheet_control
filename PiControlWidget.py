@@ -7,10 +7,18 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
 )
-from app_functions import load_yaml, save_yaml, CONFIG
-from PiController import PiController
+from app_functions import (
+    load_yaml,
+    save_yaml,
+    CONFIG,
+)
+from PiController import (
+    PiController,
+)
 import time
-from SlidesWidget import pi_widgets
+from SlidesWidget import (
+    pi_widgets,
+)
 
 
 class PIControlWidget(QWidget):
@@ -68,13 +76,21 @@ class PIControlWidget(QWidget):
         self.step_input = QLineEdit(init_value)
         layout.addWidget(self.step_label)
         layout.addWidget(self.step_input)
-        self.pi_controller.move_abs(self.controller_id, pi_val)
+        self.pi_controller.move_abs(
+            self.controller_id,
+            pi_val,
+        )
         while not pi_controller.devices[self.controller_id - 1].gcscommands.qONT(axe)[
             1
         ]:
             time.sleep(0.05)
         self.position_label = QLabel("Position:")
-        init_value = str(round(pi_controller.get_pos(device_id=controller_id), 3))
+        init_value = str(
+            round(
+                pi_controller.get_pos(device_id=controller_id),
+                3,
+            )
+        )
         self.position_input = QLineEdit(init_value)
         layout.addWidget(self.position_label)
         layout.addWidget(self.position_input)
@@ -102,7 +118,9 @@ class PIControlWidget(QWidget):
 
         self.setLayout(layout)
 
-    def move_up(self):
+    def move_up(
+        self,
+    ):
         txt = self.step_input.text()
         value = float(self.position_input.text())
 
@@ -124,14 +142,26 @@ class PIControlWidget(QWidget):
         else:
 
             if -self.limit_step <= steps <= self.limit_step:
-                self.pi_controller.move_rel(self.controller_id, steps)
-                self.position_input.setText(str(round(float(value + steps), 3)))
+                self.pi_controller.move_rel(
+                    self.controller_id,
+                    steps,
+                )
+                self.position_input.setText(
+                    str(
+                        round(
+                            float(value + steps),
+                            3,
+                        )
+                    )
+                )
             else:
                 self.err_display.setText(
                     f"step should be between {-self.limit_step} and { self.limit_step}"
                 )
 
-    def move_down(self):
+    def move_down(
+        self,
+    ):
         txt = self.step_input.text()
         try:
             steps = float(txt)
@@ -151,14 +181,26 @@ class PIControlWidget(QWidget):
             self.err_display.setText(f"Min is {self.min}")
         else:
             if -self.limit_step <= steps <= self.limit_step:
-                self.pi_controller.move_rel(self.controller_id, -steps)
-                self.position_input.setText(str(round(value - steps, 3)))
+                self.pi_controller.move_rel(
+                    self.controller_id,
+                    -steps,
+                )
+                self.position_input.setText(
+                    str(
+                        round(
+                            value - steps,
+                            3,
+                        )
+                    )
+                )
             else:
                 self.err_display.setText(
                     f"step should be between {-self.limit_step} and { self.limit_step}"
                 )
 
-    def send_position(self):
+    def send_position(
+        self,
+    ):
         position_txt = self.position_input.text()
         try:
             position = float(position_txt)
@@ -171,15 +213,23 @@ class PIControlWidget(QWidget):
         elif position > self.max:
             self.err_display.setText(f"Max is {self.max}")
         else:
-            self.pi_controller.move_abs(self.controller_id, position)
+            self.pi_controller.move_abs(
+                self.controller_id,
+                position,
+            )
             time.sleep(1)
             self.position_input.setText(str(position))
 
-    def save_params(self):
+    def save_params(
+        self,
+    ):
         val = self.position_input.text()
         config = load_yaml(CONFIG)
         config[f"pi{self.controller_id}_val"] = float(val)
-        save_yaml(config, CONFIG)
+        save_yaml(
+            config,
+            CONFIG,
+        )
 
 
 if __name__ == "__main__":
@@ -196,7 +246,10 @@ if __name__ == "__main__":
     app = napari.Viewer()
 
     pi_controller = PiController()
-    for i in range(1, 5):
+    for i in range(
+        1,
+        5,
+    ):
         if i == 1:
             mini = 8
             maxi = 16.999
@@ -210,9 +263,16 @@ if __name__ == "__main__":
             mini = 0.001
             maxi = 16.999
         pi_widget = PIControlWidget(
-            pi_controller, pi_vals[i - 1], controller_id=i, mini=mini, maxi=maxi
+            pi_controller,
+            pi_vals[i - 1],
+            controller_id=i,
+            mini=mini,
+            maxi=maxi,
         )
-        app.window.add_dock_widget(pi_widget, area="right")
+        app.window.add_dock_widget(
+            pi_widget,
+            area="right",
+        )
         pi_widgets.append(pi_widget)
 
     napari.run()

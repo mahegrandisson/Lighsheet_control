@@ -1,0 +1,33 @@
+[project]
+name = "lighsheet_control"
+version = "0.1.0"
+description = "Light sheet microscope control software using Napari, PyQt5 and PI controllers"
+authors = [
+    { name = "Your Name", email = "your@email.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "PyQt5",
+    "napari",
+    "pymmcore-plus",
+    "pipython",
+    "pyyaml"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+exclude = '''
+/(
+    __pycache__|
+    \.venv|
+    build|
+    dist|
+    .*\.pyc
+)/
+'''
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

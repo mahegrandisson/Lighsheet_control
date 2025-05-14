@@ -1,6 +1,8 @@
 import PyDAQmx
 import numpy as np
-from PyDAQmx import Task
+from PyDAQmx import (
+    Task,
+)
 import time
 
 
@@ -18,7 +20,12 @@ def generate_sine_wave(
     total_time = cycles_per_buffer * period  # Temps total pour les cycles
 
     # Créer un vecteur de temps
-    time_array = np.linspace(0, total_time, samples_per_buffer, endpoint=False)
+    time_array = np.linspace(
+        0,
+        total_time,
+        samples_per_buffer,
+        endpoint=False,
+    )
 
     # Générer la sine wave
     sine_wave = amp * np.sin(2 * np.pi * freq * time_array) + offset
@@ -26,7 +33,13 @@ def generate_sine_wave(
     return sine_wave
 
 
-def scan_between_galvos(start1, end1, start2, end2, steps):
+def scan_between_galvos(
+    start1,
+    end1,
+    start2,
+    end2,
+    steps,
+):
     """
     Effectue un balayage entre les bornes des deux galvanomètres.
     Pour chaque point de Galvo1, on parcourt toute la plage de Galvo2.
@@ -40,27 +53,57 @@ def scan_between_galvos(start1, end1, start2, end2, steps):
     # Créer les tâches pour les deux galvanomètres
     task1 = Task()
     task1.CreateAOVoltageChan(
-        "Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None
+        "Dev1/ao0",
+        "",
+        start1,
+        end1,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
     )
 
     task2 = Task()
     task2.CreateAOVoltageChan(
-        "Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None
+        "Dev1/ao1",
+        "",
+        start2,
+        end2,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
     )
 
-    galvo1_values = np.linspace(start1, end1, steps)
-    galvo2_values = np.linspace(start2, end2, steps)
+    galvo1_values = np.linspace(
+        start1,
+        end1,
+        steps,
+    )
+    galvo2_values = np.linspace(
+        start2,
+        end2,
+        steps,
+    )
 
     # Balayage 2D
     for value1 in galvo1_values:
         sine_wave_1 = generate_sine_wave(offset=value1)
         task1.WriteAnalogF64(
-            1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, sine_wave_1, None, None
+            1,
+            True,
+            10.0,
+            PyDAQmx.DAQmx_Val_GroupByChannel,
+            sine_wave_1,
+            None,
+            None,
         )
         for value2 in galvo2_values:
             sine_wave_2 = generate_sine_wave(offset=value2)
             task2.WriteAnalogF64(
-                1, True, 10.0, PyDAQmx.DAQmx_Val_GroupByChannel, sine_wave_2, None, None
+                1,
+                True,
+                10.0,
+                PyDAQmx.DAQmx_Val_GroupByChannel,
+                sine_wave_2,
+                None,
+                None,
             )
             time.sleep(0.5)
 
@@ -70,14 +113,33 @@ def scan_between_galvos(start1, end1, start2, end2, steps):
     task2.ClearTask()
 
 
-def sweep_vert(start1, start2, end2, step):
+def sweep_vert(
+    start1,
+    start2,
+    end2,
+    step,
+):
 
     # Créer les tâches pour les deux galvanomètres
     task1 = Task()
-    task1.CreateAOVoltageChan("Dev1/ao0", "", -10, 10, PyDAQmx.DAQmx_Val_Volts, None)
+    task1.CreateAOVoltageChan(
+        "Dev1/ao0",
+        "",
+        -10,
+        10,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
+    )
 
     task2 = Task()
-    task2.CreateAOVoltageChan("Dev1/ao1", "", -10, 10, PyDAQmx.DAQmx_Val_Volts, None)
+    task2.CreateAOVoltageChan(
+        "Dev1/ao1",
+        "",
+        -10,
+        10,
+        PyDAQmx.DAQmx_Val_Volts,
+        None,
+    )
 
     tm = time.time()
     task1.WriteAnalogF64(
@@ -85,25 +147,48 @@ def sweep_vert(start1, start2, end2, step):
         True,
         10.0,
         PyDAQmx.DAQmx_Val_GroupByChannel,
-        np.array([start1], dtype=np.float64),
+        np.array(
+            [start1],
+            dtype=np.float64,
+        ),
         None,
         None,
     )
     task2.WriteAnalogF64(
-        len(np.arange(start2, end2, step)),
+        len(
+            np.arange(
+                start2,
+                end2,
+                step,
+            )
+        ),
         True,
         10.0,
         PyDAQmx.DAQmx_Val_GroupByChannel,
-        np.arange(start2, end2, step),
+        np.arange(
+            start2,
+            end2,
+            step,
+        ),
         None,
         None,
     )
     task2.WriteAnalogF64(
-        len(np.arange(start2, end2, step)),
+        len(
+            np.arange(
+                start2,
+                end2,
+                step,
+            )
+        ),
         True,
         10.0,
         PyDAQmx.DAQmx_Val_GroupByChannel,
-        np.arange(end2, start2, -step),
+        np.arange(
+            end2,
+            start2,
+            -step,
+        ),
         None,
         None,
     )

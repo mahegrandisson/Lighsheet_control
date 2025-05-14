@@ -2,9 +2,13 @@ import ctypes as ct
 import time
 
 import numpy as np
-from PyDAQmx import Task
+from PyDAQmx import (
+    Task,
+)
 import PyDAQmx
-from PiController import PiController
+from PiController import (
+    PiController,
+)
 
 task = Task()
 
@@ -14,7 +18,11 @@ samples_per_cycle = (
 )
 
 
-task.CreateDOChan("Dev1/port0/line0", "", PyDAQmx.DAQmx_Val_ChanForAllLines)
+task.CreateDOChan(
+    "Dev1/port0/line0",
+    "",
+    PyDAQmx.DAQmx_Val_ChanForAllLines,
+)
 
 
 # task.CfgSampClkTiming("", frequency, PyDAQmx.DAQmx_Val_Rising, PyDAQmx.DAQmx_Val_ContSamps, samples_per_cycle)
@@ -22,8 +30,14 @@ task.CreateDOChan("Dev1/port0/line0", "", PyDAQmx.DAQmx_Val_ChanForAllLines)
 pi_controller = PiController()
 pi_controller.move_abs(1, 11)
 pi_controller.move_abs(2, 80)
-pi_controller.move_abs(3, 14.35)
-pi_controller.move_abs(4, 16.5)
+pi_controller.move_abs(
+    3,
+    14.35,
+)
+pi_controller.move_abs(
+    4,
+    16.5,
+)
 time.sleep(2)
 print("init done")
 samples_written = ct.c_int32()
@@ -37,7 +51,10 @@ for _ in range(40):
         True,
         10.0,
         PyDAQmx.DAQmx_Val_GroupByChannel,
-        np.array([1], dtype=np.uint8),
+        np.array(
+            [1],
+            dtype=np.uint8,
+        ),
         ct.byref(samples_written),
         None,
     )
@@ -47,7 +64,10 @@ for _ in range(40):
         True,
         10.0,
         PyDAQmx.DAQmx_Val_GroupByChannel,
-        np.array([0], dtype=np.uint8),
+        np.array(
+            [0],
+            dtype=np.uint8,
+        ),
         ct.byref(samples_written),
         None,
     )
