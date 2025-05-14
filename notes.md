@@ -17,4 +17,6 @@ PI Scan: X= 11.7-12.3
 oil chamber but objective not submerged in it, still in air. 
 Q: does being submerged in water provide extra/better brillouin signal ? idk but i'll have to check with Alexis when he comes back bc signal seemd a tad better with water immersion.
 
+
+app changes : better params saving method for the scan. Parent Folder added.
 			
