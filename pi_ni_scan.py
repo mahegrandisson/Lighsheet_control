@@ -11,6 +11,7 @@ from pipython import PILogger
 import logging
 from skimage.io import imsave
 from napari.qt.threading import thread_worker
+import os
 
 
 def scan(pi_controller: PiController,device_id: int,startZ: float, stopZ: float,startY: float, stopY: float,plane_number: int, frequency: float,sample_number_per_sine_period: int,duration: float=120):
@@ -216,6 +217,8 @@ def brillouin_scan(pi_controller: PiController, core: CMMCorePlus,
 
 
 def save_images(images,path):
+    if not os.path.exists(path):
+        os.makedirs(path)
     for i in  range(len(images)):
         x_pos = int(images[i][0]*1e3)
         y_pos = int(images[i][1]*1e3)

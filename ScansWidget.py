@@ -158,19 +158,23 @@ class ScanWidget(QWidget):
         self.info_label_2.setText("1µm <=step< 1000µm")
         self.info_label_2.setStyleSheet("color: orange;")
 
-        self.label = QLabel("Select Folder")
+        self.folder_label = QLabel("Select Parent Folder")
         self.path_input = QLineEdit()
+        self.folder_prefix_label = QLabel("saving folder")
+        self.folder_prefix_input = QLineEdit()
         self.browse_btn = QPushButton("Browse")
         self.browse_btn.setFixedWidth(80)
 
-        # Connexion au slot
+        #connect to browse
         self.browse_btn.clicked.connect(self.select_folder)
 
-        # Layout horizontal
+        #horizontal layout
         layout = QHBoxLayout()
-        layout.addWidget(self.label)
+        layout.addWidget(self.folder_label)
         layout.addWidget(self.path_input)
         layout.addWidget(self.browse_btn)
+        layout.addWidget(self.folder_prefix_label)
+        layout.addWidget(self.folder_prefix_input)
         layout.setContentsMargins(0, 0, 0, 0)
 
 
@@ -225,6 +229,8 @@ class ScanWidget(QWidget):
                         },
                         "folder": self.path_input.text(),
 
+                        "folder prefix": self.folder_prefix_input.text(),
+
                         "exposure": float(self.exposure_input.text()),
 
                         "camera": self.camera_input.currentText()
@@ -264,6 +270,8 @@ class ScanWidget(QWidget):
 
             self.path_input.setText(params["folder"])
 
+            self.folder_prefix_input.setText(params["folder prefix"])
+
             self.camera_input.setCurrentText(params["camera"])
 
             self.exposure_input.setText(str(params["exposure"]))
@@ -297,7 +305,8 @@ class ScanWidget(QWidget):
 
 
             self.disp_label.setText("running and computing...")
-            worker = brillouin_scan(self.pi_controller, self.core, btc_x, btc_y, btc_z, ulc_x, ulc_y, ulc_z, s_x, s_y, s_z, self.path_input.text())
+            path = self.path_input.text()+ self.folder_prefix_input.text()
+            worker = brillouin_scan(self.pi_controller, self.core, btc_x, btc_y, btc_z, ulc_x, ulc_y, ulc_z, s_x, s_y, s_z, path)
             worker.start()
             worker.signals.finished.connect(lambda: self.scan_state(0))
 
@@ -312,7 +321,7 @@ class ScanWidget(QWidget):
             self.disp_label.setText("Scan done ! images saved at " + self.path_input.text())
 
     def select_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        folder = QFileDialog.getExistingDirectory(self, "Select parent Folder")
         if folder:
             self.path_input.setText(folder)
         self.show()
