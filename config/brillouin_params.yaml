@@ -2,15 +2,15 @@ bottom_right_corner:
   x: 6.0
   y: 5.0
   z: 10.0
-camera: orcaFlash
+camera: orcaQuest
 exposure: 10.0
-folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images/TEST
+folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images
 folder prefix: uwu
 steps:
   x_step: 70.0
   y_step: 50.0
   z_step: 20.0
 upper_left_corner:
-  x: 6.3
-  y: 5.2
-  z: 10.5
+  x: 6.0
+  y: 5.0
+  z: 10.1

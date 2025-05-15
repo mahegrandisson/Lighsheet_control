@@ -110,7 +110,7 @@ class ScanWidget(QWidget):
 
         # where to save the scan params
         self.filepath = B_PARAMS
-
+        self.full_path = ""
         # safety init
         (
             self.start_z,
@@ -467,7 +467,7 @@ class ScanWidget(QWidget):
         self,
     ):
         try:
-            self.core.setExposure(int(self.exposure_input.text()))
+            self.core.setExposure(float(self.exposure_input.text()))
             # if self.disp_label.text() == "Parameters saved !":
             btc_x = float(self.br_x_input.text())
             btc_y = float(self.br_y_input.text())
@@ -488,7 +488,7 @@ class ScanWidget(QWidget):
                 self.core.setCameraDevice(self.cameras[0])
 
             self.disp_label.setText("running and computing...")
-            path = self.path_input.text() + self.folder_prefix_input.text()
+            self.full_path = self.path_input.text() + '/' + self.folder_prefix_input.text()
             worker = brillouin_scan(
                 self.pi_controller,
                 self.core,
@@ -501,15 +501,15 @@ class ScanWidget(QWidget):
                 s_x,
                 s_y,
                 s_z,
-                path,
+                self.full_path,
             )
             worker.start()
             worker.signals.finished.connect(lambda: self.scan_state(0))
 
             # else:
             #    self.disp_label.setText("Please save parameters first")
-        except ValueError:
-            self.disp_label.setText("Invalid parameters")
+        except Exception as e:
+            self.disp_label.setText(f"Invalid parameters:{e}")
 
     def scan_state(
         self,
@@ -517,7 +517,7 @@ class ScanWidget(QWidget):
     ):
         if state == 0:
             self.disp_label.setText(
-                "Scan done ! images saved at " + self.path_input.text()
+                "Scan done ! images saved at " + self.full_path
             )
 
     def select_folder(
