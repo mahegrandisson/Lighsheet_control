@@ -4,9 +4,7 @@ from PyDAQmx import (
     Task,
 )
 import numpy as np
-from simple_galvo import (
-    set_galvos_position,
-)
+from galvo_control import set_galvos_position
 
 
 def generate_sin_wave(
@@ -159,7 +157,7 @@ def fast_fluo(
     taskG.StartTask()
     taskCAM.StartTask()
     task_ms.StartTask()
-    tmp = time.time()
+    # tmp = time.time()
     # print(tmp - tm)
 
     time.sleep(duration)

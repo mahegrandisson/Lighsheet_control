@@ -6,10 +6,7 @@ from pulsing import (
     generate_sin_wave,
 )
 import time
-import numpy as np
-from simple_galvo import (
-    set_galvos_position,
-)
+from galvo_control import set_galvos_position
 
 frequency = 20
 # frequency = frequency*2

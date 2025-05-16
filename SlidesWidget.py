@@ -58,7 +58,7 @@ class SlidesWidget(QWidget):
         layout.addWidget(self.east_west_label)
         layout.addWidget(self.east_west_slider)
 
-        self.reset_galvo_values = QPushButton(f"RESET")
+        self.reset_galvo_values = QPushButton("RESET")
         self.reset_galvo_values.clicked.connect(self.reset_galvos)
         layout.addWidget(self.reset_galvo_values)
 

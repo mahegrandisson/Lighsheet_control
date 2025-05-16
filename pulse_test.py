@@ -25,7 +25,8 @@ task.CreateDOChan(
 )
 
 
-# task.CfgSampClkTiming("", frequency, PyDAQmx.DAQmx_Val_Rising, PyDAQmx.DAQmx_Val_ContSamps, samples_per_cycle)
+# task.CfgSampClkTiming("", frequency, PyDAQmx.DAQmx_Val_Rising,
+# PyDAQmx.DAQmx_Val_ContSamps, samples_per_cycle)
 
 pi_controller = PiController()
 pi_controller.move_abs(1, 11)

@@ -43,7 +43,8 @@ class PIControlWidget(QWidget):
         # Paramètres de position
         if controller_id == 1:
             self.title_label = QLabel(
-                f"Device {controller_id} | Z stage - < : Towards objective | > : Towards us"
+                f"Device {controller_id} | Z stage "
+                f"- < : Towards objective | > : Towards us"
             )
             layout.addWidget(self.title_label)
             self.step_label = QLabel("Step: (mm)")
@@ -51,7 +52,8 @@ class PIControlWidget(QWidget):
 
         elif controller_id == 2:
             self.title_label = QLabel(
-                f"Device {controller_id} | Theta stage - < : Counter clockwise | > : Clockwise"
+                f"Device {controller_id} | Theta stage "
+                f"- < : Counter clockwise | > : Clockwise"
             )
             layout.addWidget(self.title_label)
             self.step_label = QLabel("Step: (deg)")
@@ -110,7 +112,7 @@ class PIControlWidget(QWidget):
         self.send_button = QPushButton(f"Send Abs Position to Device {controller_id}")
         layout.addWidget(self.send_button)
 
-        self.err_display = QLabel(f"")
+        self.err_display = QLabel("")
 
         layout.addWidget(self.err_display)
 
@@ -127,8 +129,8 @@ class PIControlWidget(QWidget):
         try:
             steps = float(txt)
             self.err_display.setText("")
-        except:
-            self.err_display.setText("Invalid step")
+        except Exception as e:
+            self.err_display.setText(f"Invalid step: {e}")
             steps = 0
 
         if not (self.down_button.isEnabled()):
@@ -166,8 +168,8 @@ class PIControlWidget(QWidget):
         try:
             steps = float(txt)
             self.err_display.setText("")
-        except:
-            self.err_display.setText("Invalid step")
+        except Exception as e:
+            self.err_display.setText(f"Invalid step: {e}")
             steps = 0
 
         value = float(self.position_input.text())
@@ -205,8 +207,8 @@ class PIControlWidget(QWidget):
         try:
             position = float(position_txt)
             self.err_display.setText("")
-        except:
-            self.err_display.setText("Invalid value")
+        except Exception as e:
+            self.err_display.setText(f"Invalid value: {e}")
             return
         if position < self.min:
             self.err_display.setText(f"Min is {self.min}")

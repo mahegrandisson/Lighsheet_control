@@ -208,10 +208,18 @@ sine_wave_2 = generate_sine_wave(offset=offset_val_2)
 
 task_1 = Task()
 task_2 = Task()
-task_1.CreateAOVoltageChan("Dev1/ao0","",-0.2,-0.010,PyDAQmx.DAQmx_Val_Volts,None) #mouvement horizontal (+ -> vers objectif)
-task_2.CreateAOVoltageChan("Dev1/ao1","",-5,5,PyDAQmx.DAQmx_Val_Volts,None) #mouvement vertical (+ -> vers le bas)
-task_1.WriteAnalogF64(samples_per_buffer,True,10,PyDAQmx.DAQmx_Val_GroupByChannel,sine_wave_1,None,None)
-task_2.WriteAnalogF64(samples_per_buffer,True,10,PyDAQmx.DAQmx_Val_GroupByChannel,sine_wave_2,None,None)
+task_1.CreateAOVoltageChan(
+"Dev1/ao0","",-0.2,-0.010,PyDAQmx.DAQmx_Val_Volts,None
+) #mouvement horizontal (+ -> vers objectif)
+task_2.CreateAOVoltageChan(
+"Dev1/ao1","",-5,5,PyDAQmx.DAQmx_Val_Volts,None
+) #mouvement vertical (+ -> vers le bas)
+task_1.WriteAnalogF64(
+samples_per_buffer,True,10,PyDAQmx.DAQmx_Val_GroupByChannel,sine_wave_1,None,None
+)
+task_2.WriteAnalogF64(
+samples_per_buffer,True,10,PyDAQmx.DAQmx_Val_GroupByChannel,sine_wave_2,None,None
+)
 
 task_1.StopTask()
 task_1.ClearTask()

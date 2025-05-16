@@ -437,7 +437,7 @@ def save_images(
         tifffile.imwrite(
             path
             + "/"
-            + f"Z"
+            + "Z"
             + str(z_pos)
             + "_X"
             + str(x_pos)
@@ -480,7 +480,7 @@ if __name__ == "__main__":
     PILogger.setLevel(logging.CRITICAL + 1)  # deactivate PILogger
     core = CMMCorePlus()
     core.loadSystemConfiguration(
-        "C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
+        r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
     )
     core.setExposure(20)
     pi_controller = PiController()

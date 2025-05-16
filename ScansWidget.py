@@ -78,7 +78,7 @@ class ScanBTNWidget(QWidget):
         widget,
     ):
 
-        if widget.hidden == False:
+        if not widget.hidden:
             widget.hide()
             widget.hidden = True
         else:
@@ -488,7 +488,9 @@ class ScanWidget(QWidget):
                 self.core.setCameraDevice(self.cameras[0])
 
             self.disp_label.setText("running and computing...")
-            self.full_path = self.path_input.text() + '/' + self.folder_prefix_input.text()
+            self.full_path = (
+                self.path_input.text() + "/" + self.folder_prefix_input.text()
+            )
             worker = brillouin_scan(
                 self.pi_controller,
                 self.core,
@@ -516,9 +518,7 @@ class ScanWidget(QWidget):
         state: int,
     ):
         if state == 0:
-            self.disp_label.setText(
-                "Scan done ! images saved at " + self.full_path
-            )
+            self.disp_label.setText("Scan done ! images saved at " + self.full_path)
 
     def select_folder(
         self,
@@ -535,7 +535,7 @@ class ScanWidget(QWidget):
 if __name__ == "__main__":
     core = CMMCorePlus()
     core.loadSystemConfiguration(
-        "C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
+        r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
     )
     pi_controller = PiController()
     app = napari.Viewer()

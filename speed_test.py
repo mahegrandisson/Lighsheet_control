@@ -9,10 +9,9 @@ from PyDAQmx import (
 from pymmcore_plus import (
     CMMCorePlus,
 )
-from simple_galvo import (
-    set_galvos_position,
-)
-import time
+from galvo_control import set_galvos_position
+
+# import time
 from PyQt5.QtCore import (
     pyqtSignal,
     QObject,
@@ -135,16 +134,12 @@ class NMM(QObject):
             image_data,
         )
 
-    def test(
-        self,
-    ):
-        mvmt_done = pyqtSignal()
-
     def snapping(
         self,
     ):
         self.core.snapImage()
         im = self.core.getImage()
+        return im
 
     def scan_between_galvos(
         self,
