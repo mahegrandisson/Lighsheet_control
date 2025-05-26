@@ -53,6 +53,13 @@ class SlidesWidget(QWidget):
         self.north_south_label = QLabel(f"SOUTH/NORTH : {galvo2_val} V")
         self.east_west_label = QLabel(f"WEST/EAST : {galvo1_val} V")
 
+        self.north_south_label.setStyleSheet(
+            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+        )
+        self.east_west_label.setStyleSheet(
+            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+        )
+
         layout.addWidget(self.north_south_label)
         layout.addWidget(self.north_south_slider)
         layout.addWidget(self.east_west_label)

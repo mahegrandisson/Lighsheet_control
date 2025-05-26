@@ -11,7 +11,8 @@ from pymmcore_plus import (
 CONFIG_FOLDER = "config/"
 B_PARAMS = CONFIG_FOLDER + "brillouin_params.yaml"
 CONFIG = CONFIG_FOLDER + "galvo_pi_config.yaml"
-SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
+# SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
+SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash4.cfg"
 
 
 galvo1_val = 0

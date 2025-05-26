@@ -46,7 +46,7 @@ class PIControlWidget(QWidget):
                 f"Device {controller_id} | Z stage "
                 f"- < : Towards objective | > : Towards us"
             )
-            layout.addWidget(self.title_label)
+
             self.step_label = QLabel("Step: (mm)")
             init_value = "0.1"
 
@@ -55,7 +55,7 @@ class PIControlWidget(QWidget):
                 f"Device {controller_id} | Theta stage "
                 f"- < : Counter clockwise | > : Clockwise"
             )
-            layout.addWidget(self.title_label)
+
             self.step_label = QLabel("Step: (deg)")
             init_value = "1"
 
@@ -63,7 +63,7 @@ class PIControlWidget(QWidget):
             self.title_label = QLabel(
                 f"Device {controller_id} | X stage - < : Left | > : Right"
             )
-            layout.addWidget(self.title_label)
+
             self.step_label = QLabel("Step: (mm)")
             init_value = "0.1"
 
@@ -71,10 +71,12 @@ class PIControlWidget(QWidget):
             self.title_label = QLabel(
                 f"Device {controller_id} | Y stage - < : Up | > : Down"
             )
-            layout.addWidget(self.title_label)
             self.step_label = QLabel("Step: (mm)")
             init_value = "0.1"
-
+        self.title_label.setStyleSheet(
+            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+        )
+        layout.addWidget(self.title_label)
         self.step_input = QLineEdit(init_value)
         layout.addWidget(self.step_label)
         layout.addWidget(self.step_input)
