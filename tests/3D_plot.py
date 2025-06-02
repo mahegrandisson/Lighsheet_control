@@ -1,6 +1,6 @@
 import os
 import matplotlib.pyplot as plt
-from pi_ni_scan import (
+from app_func.pi_ni_scan import (
     read_tiff_img,
 )
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         x_data,
         y_data,
         z_data,
-    ) = from_folder_data("images/Brillouin_Tiff")
+    ) = from_folder_data("../images/Brillouin_Tiff")
     plot_3d_points(
         x_data,
         y_data,

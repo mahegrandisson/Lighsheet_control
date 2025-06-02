@@ -4,7 +4,7 @@ from PyDAQmx import (
     Task,
 )
 import numpy as np
-from galvo_control import set_galvos_position
+from galvo.galvo_control import set_galvos_position
 
 
 def generate_sin_wave(

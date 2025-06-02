@@ -6,7 +6,7 @@ from PyDAQmx import (
     Task,
 )
 import PyDAQmx
-from PiController import (
+from pi_contol.PiController import (
     PiController,
 )
 

@@ -19,13 +19,13 @@ import os
 from pymmcore_plus import (
     CMMCorePlus,
 )
-from PiController import (
+from pi_contol.PiController import (
     PiController,
 )
-from pi_ni_scan import (
+from app_func.pi_ni_scan import (
     brillouin_scan,
 )
-from app_functions import (
+from app_func.app_functions import (
     B_PARAMS,
 )
 
@@ -104,9 +104,11 @@ class ScanWidget(QWidget):
 
         # define the system's available cameras
         self.cameras = []
+        print(self.core.getLoadedDevices())
         for dev in self.core.getLoadedDevices():
             if "cam".upper() in dev or "cam" in dev or "orca" in dev:
                 self.cameras.append(dev)
+        print(self.cameras)
 
         # where to save the scan params
         self.filepath = B_PARAMS
@@ -453,8 +455,12 @@ class ScanWidget(QWidget):
             self.path_input.setText(params["folder"])
 
             self.folder_prefix_input.setText(params["folder prefix"])
+            if params["camera"] != "":
+                self.camera_input.setCurrentText(params["camera"])
+            else:
+                self.camera_input.setCurrentText(self.cameras[0])
 
-            self.camera_input.setCurrentText(params["camera"])
+
 
             self.exposure_input.setText(str(params["exposure"]))
 
@@ -535,7 +541,7 @@ class ScanWidget(QWidget):
 if __name__ == "__main__":
     core = CMMCorePlus()
     core.loadSystemConfiguration(
-        r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
+        r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaflash4.cfg"
     )
     pi_controller = PiController()
     app = napari.Viewer()

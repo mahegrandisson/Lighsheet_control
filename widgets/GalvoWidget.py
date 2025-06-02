@@ -1,4 +1,3 @@
-import napari
 from PyQt5.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -9,8 +8,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import (
     Qt,
 )
-from galvo_control import *
-from app_functions import *
+from galvo.galvo_control import *
+from app_func.app_functions import *
 
 pi_widgets = []
 

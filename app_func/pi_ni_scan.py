@@ -5,14 +5,14 @@ from tifffile import (
 from ome_types import (
     from_xml,
 )
-from PiController import (
+from pi_contol.PiController import (
     PiController,
 )
 from PyDAQmx import (
     Task,
 )
 import PyDAQmx
-from pulsing import (
+from tests.pulsing import (
     generate_sin_wave,
 )
 import time
@@ -499,5 +499,5 @@ if __name__ == "__main__":
         100,
         100,
         20,
-        "images/Brillouin_Tiff",
+        "../images/Brillouin_Tiff",
     )

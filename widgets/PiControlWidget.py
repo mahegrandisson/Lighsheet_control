@@ -7,16 +7,16 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
 )
-from app_functions import (
+from app_func.app_functions import (
     load_yaml,
     save_yaml,
     CONFIG,
 )
-from PiController import (
+from pi_contol.PiController import (
     PiController,
 )
 import time
-from SlidesWidget import (
+from GalvoWidget import (
     pi_widgets,
 )
 

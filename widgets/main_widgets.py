@@ -1,19 +1,20 @@
 from PiControlWidget import (
     PIControlWidget,
 )
-from SlidesWidget import (
+from GalvoWidget import (
     SlidesWidget,
 )
 from ScansWidget import (
     ScanBTNWidget,
 )
-from app_functions import *
+from app_func.app_functions import *
 
 import napari
 from pymmcore_plus import (
     CMMCorePlus,
 )
 
+from pi_contol.PiController import PiController
 
 if __name__ == "__main__":
     params = load_yaml(CONFIG)

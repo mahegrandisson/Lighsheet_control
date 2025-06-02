@@ -9,7 +9,7 @@ from PyDAQmx import (
 from pymmcore_plus import (
     CMMCorePlus,
 )
-from galvo_control import set_galvos_position
+from galvo.galvo_control import set_galvos_position
 
 # import time
 from PyQt5.QtCore import (
