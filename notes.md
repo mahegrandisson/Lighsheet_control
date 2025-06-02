@@ -19,4 +19,7 @@ Q: does being submerged in water provide extra/better brillouin signal ? idk but
 
 
 app changes : better params saving method for the scan. Parent Folder added.
-			
+
+# 02/06/2025
+ScansWidget debug --> cfg files modification
+folder rearangement --> refactoring for functionnal app
