@@ -104,11 +104,13 @@ class ScanWidget(QWidget):
 
         # define the system's available cameras
         self.cameras = []
+        self.cam_names = ["ORCA","CAM"]
         print(self.core.getLoadedDevices())
         for dev in self.core.getLoadedDevices():
-            if "cam".upper() in dev or "cam" in dev or "orca" in dev:
-                self.cameras.append(dev)
-        print(self.cameras)
+            for name in self.cam_names:
+                if name in dev.upper():
+                    self.cameras.append(dev)
+
 
         # where to save the scan params
         self.filepath = B_PARAMS
@@ -191,7 +193,7 @@ class ScanWidget(QWidget):
 
         self.info_label = QLabel()
         self.info_label.setText("4<=X<17   |   0<Y<17   |   8<=Z<17")
-        self.info_label.setStyleSheet("color: orange;")
+        self.info_label.setStyleSheet("color: pink;font-family: 'Arial Black';font-weight: bold;")
 
         grid_layout = QGridLayout()
 
@@ -321,7 +323,7 @@ class ScanWidget(QWidget):
 
         self.info_label_2 = QLabel()
         self.info_label_2.setText("1µm <=step< 1000µm")
-        self.info_label_2.setStyleSheet("color: orange;")
+        self.info_label_2.setStyleSheet("color: pink;font-family: 'Arial Black';font-weight: bold;")
 
         self.folder_label = QLabel("Select Parent Folder")
         self.path_input = QLineEdit()
