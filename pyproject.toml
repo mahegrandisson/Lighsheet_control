@@ -1,7 +1,7 @@
 [project]
 name = "lighsheet_control"
 version = "0.1.0"
-description = "Light sheet microscope control software using Napari, PyQt5 and PI controllers"
+description = "Light sheet microscope control software using napari. The original setup uses PI controllers and a NI USB-659".
 authors = [
     { name = "Mahe Grandisson", email = "mahe.grandisson@gmail.com" }
 ]
