@@ -105,7 +105,7 @@ class ScanWidget(QWidget):
         # define the system's available cameras
         self.cameras = []
         self.cam_names = ["ORCA","CAM"]
-        print(self.core.getLoadedDevices())
+        #print(self.core.getLoadedDevices())
         for dev in self.core.getLoadedDevices():
             for name in self.cam_names:
                 if name in dev.upper():
@@ -192,7 +192,7 @@ class ScanWidget(QWidget):
         self.camera_input.setCurrentText(self.core.getCameraDevice())
 
         self.info_label = QLabel()
-        self.info_label.setText("4<=X<17   |   0<Y<17   |   8<=Z<17")
+        self.info_label.setText("4<=X<17 mm   |   0<Y<17 mm   |   8<=Z<17 mm")
         self.info_label.setStyleSheet("color: pink;font-family: 'Arial Black';font-weight: bold;")
 
         grid_layout = QGridLayout()

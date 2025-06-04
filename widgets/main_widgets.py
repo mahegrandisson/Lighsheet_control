@@ -96,7 +96,7 @@ if __name__ == "__main__":
     )
     app.window.add_dock_widget(
         sl_widget,
-        area="left",
+        area="bottom",
     )
 
     sc_widget = ScanBTNWidget(
