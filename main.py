@@ -1,10 +1,10 @@
-from PiControlWidget import (
+from widgets.PiControlWidget import (
     PIControlWidget,
 )
-from GalvoWidget import (
+from widgets.GalvoWidget import (
     SlidesWidget,
 )
-from ScansWidget import (
+from widgets.ScansWidget import (
     ScanBTNWidget,
 )
 from app_func.app_functions import *
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         qt_app = QApplication(sys.argv)
 
     # Affiche le splash screen
-    splash_pix = QPixmap("../logos/restore_logo.png")  # mets le chemin vers ton image
+    splash_pix = QPixmap("logos/restore_logo.png")  # mets le chemin vers ton image
     splash = QSplashScreen(splash_pix)
     splash.show()
     qt_app.processEvents()

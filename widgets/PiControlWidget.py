@@ -16,7 +16,7 @@ from pi_contol.PiController import (
     PiController,
 )
 import time
-from GalvoWidget import (
+from widgets.GalvoWidget import (
     pi_widgets,
 )
 
