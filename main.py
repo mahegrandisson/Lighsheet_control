@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QApplication, QSplashScreen
 from PyQt5.QtGui import QPixmap
 
 import sys
+
 if __name__ == "__main__":
 
     qt_app = QApplication.instance()

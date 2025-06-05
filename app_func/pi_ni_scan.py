@@ -12,9 +12,9 @@ from PyDAQmx import (
     Task,
 )
 import PyDAQmx
-from tests.pulsing import (
-    generate_sin_wave,
-)
+
+from testing.pulsing import generate_sin_wave
+
 import time
 from pymmcore_plus import (
     CMMCorePlus,
