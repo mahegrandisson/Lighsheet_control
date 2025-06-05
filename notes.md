@@ -23,3 +23,6 @@ app changes : better params saving method for the scan. Parent Folder added.
 # 02/06/2025
 ScansWidget debug --> cfg files modification
 folder rearangement --> refactoring for functionnal app
+
+# 05/06/205
+cant seem to make a .exe file easily. Will look into it to maybe improve the code architecture
