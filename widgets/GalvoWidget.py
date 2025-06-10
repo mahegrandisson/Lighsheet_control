@@ -10,6 +10,7 @@ from PyQt5.QtCore import (
 )
 from galvo.galvo_control import *
 from app_func.app_functions import *
+import napari
 
 pi_widgets = []
 
@@ -142,6 +143,8 @@ class SlidesWidget(QWidget):
 
 
 if __name__ == "__main__":
+    import os
+    os.chdir('..')
     params = load_yaml(CONFIG)
     galvo1_val = float(params["galvo1_val"])
     galvo2_val = float(params["galvo2_val"])

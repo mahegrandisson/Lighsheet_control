@@ -1,3 +1,4 @@
+
 from PiControlWidget import (
     PIControlWidget,
 )
@@ -22,13 +23,14 @@ from PyQt5.QtGui import QPixmap
 import sys
 
 if __name__ == "__main__":
-
+    import os
+    os.chdir('..')
     qt_app = QApplication.instance()
     if qt_app is None:
         qt_app = QApplication(sys.argv)
 
     # Affiche le splash screen
-    splash_pix = QPixmap("../logos/restore_logo.png")  # mets le chemin vers ton image
+    splash_pix = QPixmap("logos/restore_logo.png")  # mets le chemin vers ton image
     splash = QSplashScreen(splash_pix)
     splash.show()
     qt_app.processEvents()
@@ -52,7 +54,7 @@ if __name__ == "__main__":
     pi_controller = PiController()
 
     core = CMMCorePlus()
-    core.loadSystemConfiguration(SYS_CONFIG)
+    #core.loadSystemConfiguration(SYS_CONFIG)
 
     app = napari.Viewer()
 

@@ -237,6 +237,7 @@ class PIControlWidget(QWidget):
 
 
 if __name__ == "__main__":
+
     params = load_yaml(CONFIG)
     pi1_val = float(params["pi1_val"])
     pi2_val = float(params["pi2_val"])
