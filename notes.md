@@ -24,5 +24,8 @@ app changes : better params saving method for the scan. Parent Folder added.
 ScansWidget debug --> cfg files modification
 folder rearangement --> refactoring for functionnal app
 
-# 05/06/205
+# 05/06/2025
 cant seem to make a .exe file easily. Will look into it to maybe improve the code architecture
+
+# 10/06/2025
+FEP,water and quartz cuvette imaging. The hardest is FEP for now, Brillouin signal is kinda flooded in light but still can see it. Paths update for the app. 
