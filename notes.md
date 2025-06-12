@@ -29,3 +29,7 @@ cant seem to make a .exe file easily. Will look into it to maybe improve the cod
 
 # 10/06/2025
 FEP,water and quartz cuvette imaging. The hardest is FEP for now, Brillouin signal is kinda flooded in light but still can see it. Paths update for the app. 
+
+# 11/06/2025
+FEP,water,PMMA and quartz cuvette imaging. Better images, adjusting the height, focus and the region we're actually 
+looking at. FEP and PMMA are the hardest but we can discern some signal.
