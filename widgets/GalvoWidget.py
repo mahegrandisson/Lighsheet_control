@@ -146,7 +146,8 @@ class SlidesWidget(QWidget):
 
 if __name__ == "__main__":
     import os
-    os.chdir('..')
+
+    os.chdir("..")
     params = load_yaml(CONFIG)
     galvo1_val = float(params["galvo1_val"])
     galvo2_val = float(params["galvo2_val"])

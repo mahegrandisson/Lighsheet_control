@@ -1,4 +1,3 @@
-
 from PiControlWidget import (
     PIControlWidget,
 )
@@ -24,7 +23,8 @@ import sys
 
 if __name__ == "__main__":
     import os
-    os.chdir('..')
+
+    os.chdir("..")
     qt_app = QApplication.instance()
     if qt_app is None:
         qt_app = QApplication(sys.argv)
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     pi_controller = PiController()
 
     core = CMMCorePlus()
-    #core.loadSystemConfiguration(SYS_CONFIG)
+    # core.loadSystemConfiguration(SYS_CONFIG)
 
     app = napari.Viewer()
 
