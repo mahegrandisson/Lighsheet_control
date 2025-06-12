@@ -74,7 +74,7 @@ class PIControlWidget(QWidget):
             self.step_label = QLabel("Step: (mm)")
             init_value = "0.1"
         self.title_label.setStyleSheet(
-            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+            "color: white;font-family: 'Arial Black';font-weight: bold;"
         )
         layout.addWidget(self.title_label)
         self.step_input = QLineEdit(init_value)

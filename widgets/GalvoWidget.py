@@ -32,6 +32,7 @@ class SlidesWidget(QWidget):
         self.north_south_slider.setTickInterval(1)
         self.north_south_slider.setTickPosition(QSlider.TicksBelow)
         self.north_south_slider.valueChanged.connect(self.move_north_south)
+        self.ns_text = f"Y Axis -/+ : {galvo2_val} V"
 
         self.east_west_slider = QSlider(Qt.Horizontal)
         self.east_west_slider.setMinimum(-50)
@@ -40,6 +41,7 @@ class SlidesWidget(QWidget):
         self.east_west_slider.setTickInterval(1)
         self.east_west_slider.setTickPosition(QSlider.TicksBelow)
         self.east_west_slider.valueChanged.connect(self.move_east_west)
+        self.es_text = f"Z Axis -/+ : {galvo1_val} V"
 
         set_galvos_position(
             galvo1_val,
@@ -50,14 +52,14 @@ class SlidesWidget(QWidget):
             galvo_id=2,
         )
 
-        self.north_south_label = QLabel(f"SOUTH/NORTH : {galvo2_val} V")
-        self.east_west_label = QLabel(f"WEST/EAST : {galvo1_val} V")
+        self.north_south_label = QLabel(self.ns_text)
+        self.east_west_label = QLabel(self.es_text)
 
         self.north_south_label.setStyleSheet(
-            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+            "color: white;font-family: 'Arial Black';font-weight: bold;"
         )
         self.east_west_label.setStyleSheet(
-            "color: pink;font-family: 'Arial Black';font-weight: bold;"
+            "color: white;font-family: 'Arial Black';font-weight: bold;"
         )
 
         layout.addWidget(self.north_south_label)
@@ -99,7 +101,7 @@ class SlidesWidget(QWidget):
             value=value,
             galvo_id=2,
         )
-        self.north_south_label.setText(f"NORTH/SOUTH : {value:.3f} V")
+        self.north_south_label.setText(self.ns_text)
 
     def move_east_west(
         self,
@@ -109,7 +111,7 @@ class SlidesWidget(QWidget):
             value=value,
             galvo_id=1,
         )
-        self.east_west_label.setText(f"EAST/WEST : {value:.3f} V")
+        self.east_west_label.setText(self.es_text)
 
     def reset_galvos(
         self,
@@ -122,8 +124,8 @@ class SlidesWidget(QWidget):
             0,
             galvo_id=2,
         )
-        self.north_south_label.setText(f"NORTH/SOUTH : {0:.3f} V")
-        self.east_west_label.setText(f"EAST/WEST : {0:.3f} V")
+        self.north_south_label.setText(self.ns_text)
+        self.east_west_label.setText(self.es_text)
         self.north_south_slider.setValue(0)
         self.east_west_slider.setValue(0)
 
