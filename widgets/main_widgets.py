@@ -1,19 +1,10 @@
-from PiControlWidget import (
-    PIControlWidget,
-)
-from GalvoWidget import (
-    SlidesWidget,
-)
-from ScansWidget import (
-    ScanBTNWidget,
-)
+from PiControlWidget import PIControlWidget
+from GalvoWidget import SlidesWidget
+from ScansWidget import ScanBTNWidget
 from app_func.app_functions import *
 
 import napari
-from pymmcore_plus import (
-    CMMCorePlus,
-)
-
+from pymmcore_plus import CMMCorePlus
 from pi_contol.PiController import PiController
 
 from PyQt5.QtWidgets import QApplication, QSplashScreen
@@ -24,17 +15,21 @@ import sys
 if __name__ == "__main__":
     import os
 
+    # Change directory to project root
     os.chdir("..")
+
+    # Start Qt application
     qt_app = QApplication.instance()
     if qt_app is None:
         qt_app = QApplication(sys.argv)
 
-    # Affiche le splash screen
-    splash_pix = QPixmap("logos/restore_logo.png")  # mets le chemin vers ton image
+    # Show splash screen
+    splash_pix = QPixmap("logos/restore_logo.png")  # Path to your splash image
     splash = QSplashScreen(splash_pix)
     splash.show()
     qt_app.processEvents()
 
+    # Load saved parameters
     params = load_yaml(CONFIG)
 
     galvo1_val = float(params["galvo1_val"])
@@ -44,56 +39,28 @@ if __name__ == "__main__":
     pi3_val = float(params["pi3_val"])
     pi4_val = float(params["pi4_val"])
 
-    pi_vals = [
-        pi1_val,
-        pi2_val,
-        pi3_val,
-        pi4_val,
-    ]
+    pi_vals = [pi1_val, pi2_val, pi3_val, pi4_val]
 
+    # Initialize PI controller
     pi_controller = PiController()
 
+    # Initialize microscope core (optional system config loading)
     core = CMMCorePlus()
     # core.loadSystemConfiguration(SYS_CONFIG)
 
+    # Launch Napari viewer
     app = napari.Viewer()
 
-    for i in range(
-        1,
-        5,
-    ):
+    # Create and add PI widgets
+    for i in range(1, 5):
         if i == 1:
-            (
-                mini,
-                maxi,
-            ) = (
-                8,
-                16.999,
-            )
+            mini, maxi = 8, 16.999
         elif i == 2:
-            (
-                mini,
-                maxi,
-            ) = (
-                -360,
-                360,
-            )
+            mini, maxi = -360, 360
         elif i == 3:
-            (
-                mini,
-                maxi,
-            ) = (
-                4,
-                16.999,
-            )
+            mini, maxi = 4, 16.999
         else:
-            (
-                mini,
-                maxi,
-            ) = (
-                0.001,
-                16.999,
-            )
+            mini, maxi = 0.001, 16.999
 
         pi_widget = PIControlWidget(
             pi_controller,
@@ -102,30 +69,19 @@ if __name__ == "__main__":
             mini=mini,
             maxi=maxi,
         )
-        app.window.add_dock_widget(
-            pi_widget,
-            area="right",
-        )
+        app.window.add_dock_widget(pi_widget, area="right")
         pi_widgets.append(pi_widget)
 
-    sl_widget = SlidesWidget(
-        galvo1_val,
-        galvo2_val,
-    )
-    app.window.add_dock_widget(
-        sl_widget,
-        area="left",
-    )
+    # Create and add galvo control widget
+    sl_widget = SlidesWidget(galvo1_val, galvo2_val)
+    app.window.add_dock_widget(sl_widget, area="left")
 
-    sc_widget = ScanBTNWidget(
-        pi_controller,
-        core,
-    )
-    app.window.add_dock_widget(
-        sc_widget,
-        area="left",
-    )
+    # Create and add scan control widget
+    sc_widget = ScanBTNWidget(pi_controller, core)
+    app.window.add_dock_widget(sc_widget, area="left")
 
+    # Close splash screen once everything is ready
     splash.finish(app.window._qt_window)
 
+    # Run Napari app loop
     napari.run()

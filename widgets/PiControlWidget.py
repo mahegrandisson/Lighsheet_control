@@ -7,98 +7,75 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
 )
-from app_func.app_functions import (
-    load_yaml,
-    save_yaml,
-    CONFIG,
-)
-from pi_contol.PiController import (
-    PiController,
-)
+from app_func.app_functions import load_yaml, save_yaml, CONFIG
+from pi_contol.PiController import PiController
 import time
-from widgets.GalvoWidget import (
-    pi_widgets,
-)
+from widgets.GalvoWidget import pi_widgets
 
 
 class PIControlWidget(QWidget):
-    def __init__(
-        self,
-        pi_controller: PiController,
-        pi_val: float,
-        controller_id: int,
-        mini: float,
-        maxi: float,
-    ):
+    def __init__(self, pi_controller: PiController, pi_val: float, controller_id: int, mini: float, maxi: float):
         super().__init__()
-        self.limit_step = 4
+
+        self.limit_step = 4  # Maximum allowed step size for move commands
         self.pi_controller = pi_controller
         self.controller_id = controller_id
-        axe = 1
-        # Interface utilisateur
+        self.min = mini
+        self.max = maxi
+        axe = 1  # Axis, presumably fixed here
+
+        # Set window title
         self.setWindowTitle(f"PI Position Control - Device {controller_id}")
+
         layout = QVBoxLayout()
-        self.max = maxi  # a regarder pour chacun
-        self.min = mini  # a regarder pour chacun
-        # Paramètres de position
+
+        # Title and step label according to device id
         if controller_id == 1:
             self.title_label = QLabel(
-                f"Device {controller_id} | Z stage "
-                f"- < : Towards objective | > : Towards us"
+                f"Device {controller_id} | Z stage - < : Towards objective | > : Towards us"
             )
-
             self.step_label = QLabel("Step: (mm)")
-            init_value = "0.1"
-
+            init_step_value = "0.1"
         elif controller_id == 2:
             self.title_label = QLabel(
-                f"Device {controller_id} | Theta stage "
-                f"- < : Counter clockwise | > : Clockwise"
+                f"Device {controller_id} | Theta stage - < : Counter clockwise | > : Clockwise"
             )
-
             self.step_label = QLabel("Step: (deg)")
-            init_value = "1"
-
+            init_step_value = "1"
         elif controller_id == 3:
             self.title_label = QLabel(
                 f"Device {controller_id} | X stage - < : Left | > : Right"
             )
-
             self.step_label = QLabel("Step: (mm)")
-            init_value = "0.1"
-
-        elif controller_id == 4:
+            init_step_value = "0.1"
+        else:
             self.title_label = QLabel(
                 f"Device {controller_id} | Y stage - < : Up | > : Down"
             )
             self.step_label = QLabel("Step: (mm)")
-            init_value = "0.1"
-        self.title_label.setStyleSheet(
-            "color: white;font-family: 'Arial Black';font-weight: bold;"
-        )
+            init_step_value = "0.1"
+
+        self.title_label.setStyleSheet("color: white; font-family: 'Arial Black'; font-weight: bold;")
         layout.addWidget(self.title_label)
-        self.step_input = QLineEdit(init_value)
+
+        self.step_input = QLineEdit(init_step_value)
         layout.addWidget(self.step_label)
         layout.addWidget(self.step_input)
-        self.pi_controller.move_abs(
-            self.controller_id,
-            pi_val,
-        )
-        while not pi_controller.devices[self.controller_id - 1].gcscommands.qONT(axe)[
-            1
-        ]:
+
+        # Move device to initial position
+        self.pi_controller.move_abs(self.controller_id, pi_val)
+        # Wait until motion is complete
+        while not pi_controller.devices[self.controller_id - 1].gcscommands.qONT(axe)[1]:
             time.sleep(0.05)
+
+        # Position label and input
         self.position_label = QLabel("Position:")
-        init_value = str(
-            round(
-                pi_controller.get_pos(device_id=controller_id),
-                3,
-            )
-        )
-        self.position_input = QLineEdit(init_value)
+        current_pos = round(pi_controller.get_pos(device_id=controller_id), 3)
+        self.position_input = QLineEdit(str(current_pos))
         layout.addWidget(self.position_label)
         layout.addWidget(self.position_input)
 
+        # Buttons layout for moving position relative to step size
         self.arrow_layout = QHBoxLayout()
 
         self.down_button = QPushButton("<")
@@ -111,173 +88,128 @@ class PIControlWidget(QWidget):
 
         layout.addLayout(self.arrow_layout)
 
+        # Button to send absolute position to device
         self.send_button = QPushButton(f"Send Abs Position to Device {controller_id}")
+        self.send_button.clicked.connect(self.send_position)
         layout.addWidget(self.send_button)
 
+        # Label to display errors
         self.err_display = QLabel("")
-
         layout.addWidget(self.err_display)
-
-        self.send_button.clicked.connect(self.send_position)
 
         self.setLayout(layout)
 
-    def move_up(
-        self,
-    ):
-        txt = self.step_input.text()
-        value = float(self.position_input.text())
-
+    def move_up(self):
         try:
-            steps = float(txt)
+            steps = float(self.step_input.text())
             self.err_display.setText("")
         except Exception as e:
             self.err_display.setText(f"Invalid step: {e}")
-            steps = 0
+            return
 
-        if not (self.down_button.isEnabled()):
-            self.down_button.setEnabled(True)
+        try:
+            value = float(self.position_input.text())
+        except Exception as e:
+            self.err_display.setText(f"Invalid position: {e}")
+            return
 
         if value >= self.max:
             self.up_button.setDisabled(True)
             self.err_display.setText(f"Max is {self.max}")
+            return
         elif value + steps > self.max:
             self.err_display.setText(f"Max is {self.max}")
+            return
         else:
+            self.up_button.setEnabled(True)
+            self.down_button.setEnabled(True)
 
             if -self.limit_step <= steps <= self.limit_step:
-                self.pi_controller.move_rel(
-                    self.controller_id,
-                    steps,
-                )
-                self.position_input.setText(
-                    str(
-                        round(
-                            float(value + steps),
-                            3,
-                        )
-                    )
-                )
+                self.pi_controller.move_rel(self.controller_id, steps)
+                new_val = round(value + steps, 3)
+                self.position_input.setText(str(new_val))
             else:
-                self.err_display.setText(
-                    f"step should be between {-self.limit_step} and { self.limit_step}"
-                )
+                self.err_display.setText(f"Step should be between {-self.limit_step} and {self.limit_step}")
 
-    def move_down(
-        self,
-    ):
-        txt = self.step_input.text()
+    def move_down(self):
         try:
-            steps = float(txt)
+            steps = float(self.step_input.text())
             self.err_display.setText("")
         except Exception as e:
             self.err_display.setText(f"Invalid step: {e}")
-            steps = 0
+            return
 
-        value = float(self.position_input.text())
+        try:
+            value = float(self.position_input.text())
+        except Exception as e:
+            self.err_display.setText(f"Invalid position: {e}")
+            return
 
-        if not (self.up_button.isEnabled()):
-            self.up_button.setEnabled(True)
         if value <= self.min:
             self.down_button.setDisabled(True)
             self.err_display.setText(f"Min is {self.min}")
+            return
         elif value - steps < self.min:
             self.err_display.setText(f"Min is {self.min}")
+            return
         else:
-            if -self.limit_step <= steps <= self.limit_step:
-                self.pi_controller.move_rel(
-                    self.controller_id,
-                    -steps,
-                )
-                self.position_input.setText(
-                    str(
-                        round(
-                            value - steps,
-                            3,
-                        )
-                    )
-                )
-            else:
-                self.err_display.setText(
-                    f"step should be between {-self.limit_step} and { self.limit_step}"
-                )
+            self.up_button.setEnabled(True)
+            self.down_button.setEnabled(True)
 
-    def send_position(
-        self,
-    ):
-        position_txt = self.position_input.text()
+            if -self.limit_step <= steps <= self.limit_step:
+                self.pi_controller.move_rel(self.controller_id, -steps)
+                new_val = round(value - steps, 3)
+                self.position_input.setText(str(new_val))
+            else:
+                self.err_display.setText(f"Step should be between {-self.limit_step} and {self.limit_step}")
+
+    def send_position(self):
         try:
-            position = float(position_txt)
+            position = float(self.position_input.text())
             self.err_display.setText("")
         except Exception as e:
             self.err_display.setText(f"Invalid value: {e}")
             return
+
         if position < self.min:
             self.err_display.setText(f"Min is {self.min}")
         elif position > self.max:
             self.err_display.setText(f"Max is {self.max}")
         else:
-            self.pi_controller.move_abs(
-                self.controller_id,
-                position,
-            )
+            self.pi_controller.move_abs(self.controller_id, position)
             time.sleep(1)
             self.position_input.setText(str(position))
 
-    def save_params(
-        self,
-    ):
-        val = self.position_input.text()
-        config = load_yaml(CONFIG)
-        config[f"pi{self.controller_id}_val"] = float(val)
-        save_yaml(
-            config,
-            CONFIG,
-        )
+    def save_params(self):
+        try:
+            val = float(self.position_input.text())
+            config = load_yaml(CONFIG)
+            config[f"pi{self.controller_id}_val"] = val
+            save_yaml(config, CONFIG)
+        except Exception as e:
+            self.err_display.setText(f"Error saving params: {e}")
 
 
 if __name__ == "__main__":
-
     params = load_yaml(CONFIG)
-    pi1_val = float(params["pi1_val"])
-    pi2_val = float(params["pi2_val"])
-    pi3_val = float(params["pi3_val"])
-    pi4_val = float(params["pi4_val"])
-    pi_vals = []
-    pi_vals.append(pi1_val)
-    pi_vals.append(pi2_val)
-    pi_vals.append(pi3_val)
-    pi_vals.append(pi4_val)
-    app = napari.Viewer()
 
+    pi_vals = [float(params[f"pi{i}_val"]) for i in range(1, 5)]
+
+    app = napari.Viewer()
     pi_controller = PiController()
-    for i in range(
-        1,
-        5,
-    ):
+
+    for i in range(1, 5):
         if i == 1:
-            mini = 8
-            maxi = 16.999
+            mini, maxi = 8, 16.999
         elif i == 2:
-            mini = -360
-            maxi = 360
+            mini, maxi = -360, 360
         elif i == 3:
-            mini = 4
-            maxi = 16.999
+            mini, maxi = 4, 16.999
         else:
-            mini = 0.001
-            maxi = 16.999
-        pi_widget = PIControlWidget(
-            pi_controller,
-            pi_vals[i - 1],
-            controller_id=i,
-            mini=mini,
-            maxi=maxi,
-        )
-        app.window.add_dock_widget(
-            pi_widget,
-            area="right",
-        )
+            mini, maxi = 0.001, 16.999
+
+        pi_widget = PIControlWidget(pi_controller, pi_vals[i - 1], controller_id=i, mini=mini, maxi=maxi)
+        app.window.add_dock_widget(pi_widget, area="right")
         pi_widgets.append(pi_widget)
 
     napari.run()

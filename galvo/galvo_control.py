@@ -4,11 +4,24 @@ from PyDAQmx import (
     Task,
 )
 
-
 def set_galvos_position(
     value: float,
     galvo_id: int,
 ):
+    """
+    Sets the voltage position of a specific galvo mirror via the DAQ device.
+
+    Parameters:
+    - value: Voltage to send to the galvo (must be within the range -5V to 5V).
+    - galvo_id: Identifier of the galvo to control.
+        - 1 → controls galvo on channel ao0
+        - 2 → controls galvo on channel ao1
+
+    Notes:
+    - Only galvo_id values of 1 or 2 are valid.
+    - Automatically opens and closes the DAQ task.
+    """
+
     task = Task()
     if galvo_id in [
         1,

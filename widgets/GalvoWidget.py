@@ -5,9 +5,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QSlider,
 )
-from PyQt5.QtCore import (
-    Qt,
-)
+from PyQt5.QtCore import Qt
 from galvo.galvo_control import *
 from app_func.app_functions import *
 import napari
@@ -16,15 +14,12 @@ pi_widgets = []
 
 
 class SlidesWidget(QWidget):
-    def __init__(
-        self,
-        galvo1_val: float,
-        galvo2_val: float,
-    ):
-
+    def __init__(self, galvo1_val: float, galvo2_val: float):
         super().__init__()
 
         layout = QVBoxLayout()
+
+        # North-South (Y-axis) slider
         self.north_south_slider = QSlider(Qt.Horizontal)
         self.north_south_slider.setMinimum(-1500)
         self.north_south_slider.setMaximum(1500)
@@ -34,6 +29,7 @@ class SlidesWidget(QWidget):
         self.north_south_slider.valueChanged.connect(self.move_north_south)
         self.ns_text = f"Y Axis -/+ : {galvo2_val} V"
 
+        # East-West (Z-axis) slider
         self.east_west_slider = QSlider(Qt.Horizontal)
         self.east_west_slider.setMinimum(-50)
         self.east_west_slider.setMaximum(50)
@@ -43,15 +39,11 @@ class SlidesWidget(QWidget):
         self.east_west_slider.valueChanged.connect(self.move_east_west)
         self.es_text = f"Z Axis -/+ : {galvo1_val} V"
 
-        set_galvos_position(
-            galvo1_val,
-            galvo_id=1,
-        )
-        set_galvos_position(
-            galvo2_val,
-            galvo_id=2,
-        )
+        # Initialize galvo positions
+        set_galvos_position(galvo1_val, galvo_id=1)
+        set_galvos_position(galvo2_val, galvo_id=2)
 
+        # Labels
         self.north_south_label = QLabel(self.ns_text)
         self.east_west_label = QLabel(self.es_text)
 
@@ -67,10 +59,12 @@ class SlidesWidget(QWidget):
         layout.addWidget(self.east_west_label)
         layout.addWidget(self.east_west_slider)
 
+        # Reset button
         self.reset_galvo_values = QPushButton("RESET")
         self.reset_galvo_values.clicked.connect(self.reset_galvos)
         layout.addWidget(self.reset_galvo_values)
 
+        # Save button
         self.save_button = QPushButton("Save All Params")
         self.save_button.clicked.connect(self.save_all_params)
         layout.addWidget(self.save_button)
@@ -78,70 +72,40 @@ class SlidesWidget(QWidget):
         self.setLayout(layout)
 
     @save_params_for_all_widgets(pi_widgets)
-    def save_all_params(
-        self,
-        _,
-    ):
+    def save_all_params(self, _):
         self.save_params()
 
-    def scan_state(
-        self,
-        msg: int,
-    ):
+    def scan_state(self, msg: int):
         if msg == 0:
-            self.state_label.setText("Scan finished !")
+            self.state_label.setText("Scan finished!")
         if msg == 1:
             self.state_label.setText("Scanning...")
 
-    def move_north_south(
-        self,
-    ):
+    def move_north_south(self):
         value = -self.north_south_slider.value() * 0.001
-        set_galvos_position(
-            value=value,
-            galvo_id=2,
-        )
+        set_galvos_position(value=value, galvo_id=2)
         self.north_south_label.setText(self.ns_text)
 
-    def move_east_west(
-        self,
-    ):
+    def move_east_west(self):
         value = self.east_west_slider.value() * 0.001
-        set_galvos_position(
-            value=value,
-            galvo_id=1,
-        )
+        set_galvos_position(value=value, galvo_id=1)
         self.east_west_label.setText(self.es_text)
 
-    def reset_galvos(
-        self,
-    ):
-        set_galvos_position(
-            0,
-            galvo_id=1,
-        )
-        set_galvos_position(
-            0,
-            galvo_id=2,
-        )
+    def reset_galvos(self):
+        set_galvos_position(0, galvo_id=1)
+        set_galvos_position(0, galvo_id=2)
         self.north_south_label.setText(self.ns_text)
         self.east_west_label.setText(self.es_text)
         self.north_south_slider.setValue(0)
         self.east_west_slider.setValue(0)
 
-    def save_params(
-        self,
-    ):
-
+    def save_params(self):
         val_NS = -self.north_south_slider.value() * 0.001
         val_EW = self.east_west_slider.value() * 0.001
         config = load_yaml(CONFIG)
         config["galvo1_val"] = val_EW
         config["galvo2_val"] = val_NS
-        save_yaml(
-            config,
-            CONFIG,
-        )
+        save_yaml(config, CONFIG)
 
 
 if __name__ == "__main__":
@@ -152,12 +116,6 @@ if __name__ == "__main__":
     galvo1_val = float(params["galvo1_val"])
     galvo2_val = float(params["galvo2_val"])
     app = napari.Viewer()
-    widget = SlidesWidget(
-        0,
-        0,
-    )
-    app.window.add_dock_widget(
-        widget,
-        area="left",
-    )
+    widget = SlidesWidget(0, 0)
+    app.window.add_dock_widget(widget, area="left")
     napari.run()

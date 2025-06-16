@@ -31,7 +31,6 @@ from napari.qt.threading import (
 )
 import os
 
-
 def scan(
     pi_controller: PiController,
     device_id: int,
@@ -44,6 +43,22 @@ def scan(
     sample_number_per_sine_period: int,
     duration: float = 120,
 ):
+    """
+    Performs a Z-axis scan while sending a sinusoidal signal to the galvo (Y-axis).
+
+    Parameters:
+    - pi_controller: Instance of PiController to control PI devices.
+    - device_id: Index of the PI device to use (1-based index).
+    - startZ: Starting position on the Z-axis.
+    - stopZ: Ending position on the Z-axis.
+    - startY: Starting position for the galvo (Y-axis).
+    - stopY: Ending position for the galvo (Y-axis).
+    - plane_number: Number of image planes to capture along the Z-axis.
+    - frequency: Frequency of the sinusoidal wave used to modulate the galvo.
+    - sample_number_per_sine_period: Number of samples per sine wave period.
+    - duration: Duration of the scan in seconds (default is 120).
+    """
+
 
     taskG = Task()
     taskG.CreateAOVoltageChan(
@@ -118,7 +133,7 @@ def scan(
         axe,
         1.5,
     )
-    print("scan started !")
+
 
     pi_controller.devices[device_id - 1].gcscommands.MOV(
         axe,
@@ -132,7 +147,7 @@ def scan(
         stopZ,
         plane_number,
     )
-    print("scanning...")
+    
     images = []
     taskG.StartTask()
     task_ms.StartTask()
@@ -147,8 +162,6 @@ def scan(
         im = core.snap(fix=True)
         images.append(im)
 
-    print("scan done !")
-
     taskG.StopTask()
     task_ms.StopTask()
     taskG.ClearTask()
@@ -160,8 +173,6 @@ def scan(
             s,
             images[i],
         )
-    print("done")
-
 
 def sync_scan(
     pi_controller: PiController,
@@ -175,6 +186,22 @@ def sync_scan(
     plane_size: int,
     plane_number: int,
 ):
+    """
+    Performs a synchronous scan by moving the galvo (Y) and the Z-stage.
+
+    Parameters:
+    - pi_controller: PI controller instance.
+    - device_id: Index of the PI device to use.
+    - core: Micro-Manager CMMCorePlus object for image acquisition.
+    - startZ: Starting position along the Z-axis.
+    - stopZ: Ending position along the Z-axis.
+    - startY: Starting galvo position (Y-axis).
+    - stopY: Ending galvo position.
+    - frequency: Used to determine timing and spacing.
+    - plane_size: Number of images per Z-slice (Y-steps).
+    - plane_number: Number of Z-slices (planes).
+    """
+
 
     axe = 1
     # a changer -----------------------------------------
@@ -256,7 +283,6 @@ def sync_scan(
         )
     print("done")
 
-
 @thread_worker
 def brillouin_scan(
     pi_controller: PiController,
@@ -272,6 +298,18 @@ def brillouin_scan(
     step_z,
     path,
 ):
+    """
+    Executes a full 3D Brillouin scan using serpentine scanning pattern.
+
+    Parameters:
+    - pi_controller: Controller instance for PI XYZ stages.
+    - core: Micro-Manager core object for controlling the camera and hardware.
+    - starting_point_x/y/z: Starting positions for each axis.
+    - end_point_x/y/z: Ending positions for each axis.
+    - step_x/y/z: Step size for each axis (in micrometers, will be converted to mm internally).
+    - path: Directory path where acquired OME-TIFF images will be saved.
+    """
+
 
     axe = 1
     step_z = step_x / 1000
@@ -421,11 +459,18 @@ def brillouin_scan(
         path,
     )
 
-
 def save_images(
     images,
     path,
 ):
+    """
+    Saves the acquired images as OME-TIFF files, embedding spatial metadata.
+
+    Parameters:
+    - images: A list of elements [X, Y, Z, image, spacing] for each voxel.
+    - path: Destination folder where TIFF images will be stored.
+    """
+
     if not os.path.exists(path):
         os.makedirs(path)
     for i in range(len(images)):
@@ -461,10 +506,19 @@ def save_images(
             },
         )
 
-
 def read_tiff_img(
     img: str,
 ):
+    """
+    Reads a TIFF image file and extracts its OME metadata.
+
+    Parameters:
+    - img: Path to the TIFF file.
+
+    Returns:
+    - Tuple of (OME metadata as parsed object, image data as numpy array).
+    """
+
     with tifffile.TiffFile(img) as tif:
         image_data = tif.asarray()
         metadata = tif.ome_metadata

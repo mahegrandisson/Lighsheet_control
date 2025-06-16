@@ -1,8 +1,6 @@
 import PyDAQmx
 import numpy as np
-from PyDAQmx import (
-    Task,
-)
+from PyDAQmx import Task
 import time
 
 
@@ -15,87 +13,56 @@ def generate_sine_wave(
     sampling_rate=10000,
 ):
     """
-    Fonction pour générer une onde sinusoïdale avec un offset en mètres.
+    Generates a sine wave with a given offset in meters.
 
-    :param amp: Amplitude de l'onde en mètres (m)
-    :param freq: Fréquence de l'onde en Hz
-    :param offset: Offset en mètres (m)
-    :param samples_per_buffer: Nombre d'échantillons par buffer
-    :param cycles_per_buffer: Nombre de cycles dans chaque buffer
-    :param sampling_rate: Taux d'échantillonnage (en Hz)
-    :return: Tableau de la forme d'onde à envoyer
+    Parameters:
+    - offset (float): Offset of the wave in meters.
+    - amp (float): Amplitude of the wave in meters. Default is 0.
+    - freq (float): Frequency of the wave in Hz. Default is 1 Hz.
+    - samples_per_buffer (int): Number of samples per buffer.
+    - cycles_per_buffer (int): Number of cycles in the waveform.
+    - sampling_rate (int): Sampling rate in Hz.
+
+    Returns:
+    - np.ndarray: Array of sine wave values.
     """
+    period = 1 / freq  # Wave period in seconds
+    total_time = cycles_per_buffer * period  # Total time duration
 
-    # Calcul de la période et du temps entre les échantillons
-    period = 1 / freq  # Période de l'onde en secondes
-    total_time = cycles_per_buffer * period  # Temps total pour les cycles
+    # Create a time vector
+    time_array = np.linspace(0, total_time, samples_per_buffer, endpoint=False)
 
-    # Créer un vecteur de temps
-    time_array = np.linspace(
-        0,
-        total_time,
-        samples_per_buffer,
-        endpoint=False,
-    )
-
-    # Générer la sine wave
+    # Generate sine wave
     sine_wave = amp * np.sin(2 * np.pi * freq * time_array) + offset
 
     return sine_wave
 
 
-def scan_between_galvos(
-    start1,
-    end1,
-    start2,
-    end2,
-    steps,
-):
+def scan_between_galvos(start1, end1, start2, end2, steps):
     """
-    Effectue un balayage entre les bornes des deux galvanomètres.
-    Pour chaque point de Galvo1, on parcourt toute la plage de Galvo2.
+    Performs a scan across the defined voltage ranges for two galvos.
 
-    :param start1: Valeur minimale pour le Galvo 1.
-    :param end1: Valeur maximale pour le Galvo 1.
-    :param start2: Valeur minimale pour le Galvo 2.
-    :param end2: Valeur maximale pour le Galvo 2.
-    :param steps: Nombre de points à échantillonner pour chaque galvo.
+    For each position of Galvo 1, the function sweeps across all positions of Galvo 2.
+
+    Parameters:
+    - start1 (float): Minimum voltage for Galvo 1.
+    - end1 (float): Maximum voltage for Galvo 1.
+    - start2 (float): Minimum voltage for Galvo 2.
+    - end2 (float): Maximum voltage for Galvo 2.
+    - steps (int): Number of positions (steps) per galvo.
     """
-    # Créer les tâches pour les deux galvanomètres
     task1 = Task()
-    task1.CreateAOVoltageChan(
-        "Dev1/ao0",
-        "",
-        start1,
-        end1,
-        PyDAQmx.DAQmx_Val_Volts,
-        None,
-    )
+    task1.CreateAOVoltageChan("Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None)
 
     task2 = Task()
-    task2.CreateAOVoltageChan(
-        "Dev1/ao1",
-        "",
-        start2,
-        end2,
-        PyDAQmx.DAQmx_Val_Volts,
-        None,
-    )
+    task2.CreateAOVoltageChan("Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None)
 
-    galvo1_values = np.linspace(
-        start1,
-        end1,
-        steps,
-    )
-    galvo2_values = np.linspace(
-        start2,
-        end2,
-        steps,
-    )
+    galvo1_values = np.linspace(start1, end1, steps)
+    galvo2_values = np.linspace(start2, end2, steps)
 
-    # Balayage 2D
+    # 2D scanning loop
     for value1 in galvo1_values:
-        print(value1)
+        print(f"Galvo 1 position: {value1}")
         sine_wave_1 = generate_sine_wave(offset=value1)
         task1.WriteAnalogF64(
             1,
@@ -119,6 +86,7 @@ def scan_between_galvos(
             )
             time.sleep(0.5)
 
+    # Clean up tasks
     task1.StopTask()
     task1.ClearTask()
     task2.StopTask()
@@ -126,51 +94,48 @@ def scan_between_galvos(
 
 
 if __name__ == "__main__":
+    # Create a task for analog input (e.g., photodiode or sensor signal)
     task1 = Task()
     task1.CreateAIVoltageChan(
-        "Dev1/ai0",
-        "",  # "Dev1/ai0" pour le premier canal analogique (AI0)
-        0,
+        "Dev1/ai0",          # Analog input channel
+        "",
+        PyDAQmx.DAQmx_Val_Cfg_Default,
         -10.0,
-        10.0,  # Plage de tension de -10V à +10V
+        10.0,
         PyDAQmx.DAQmx_Val_Volts,
         None,
     )
-    task1.CfgSampClkTiming(
-        "",
-        1000.0,
-        Task.CfgSampClkTiming.SampTimingMode_Internal,
-    )
-    task1.Start()
 
-    # Lire les données
+    # Configure the sampling clock
+    task1.CfgSampClkTiming(
+        "",                       # Use onboard clock
+        1000.0,                   # Sampling rate: 1000 samples/sec
+        PyDAQmx.DAQmx_Val_Rising,
+        PyDAQmx.DAQmx_Val_ContSamps,
+        1,
+    )
+
+    task1.StartTask()
+
+    # Read and display data continuously until interrupted
     try:
         while True:
-            # Lire un échantillon à la fois (ajustez la taille du buffer si nécessaire)
-            data = np.zeros(
-                1,
-                dtype=np.float64,
-            )
+            data = np.zeros(1, dtype=np.float64)
             task1.ReadAnalogF64(
                 1,
                 10.0,
-                0,
+                PyDAQmx.DAQmx_Val_GroupByChannel,
                 data,
-            )  # Lire un échantillon avec un timeout de 10 secondes
-
-            # Afficher la valeur lue
-            print(
-                "Valeur lue (V) : ",
-                data[0],
+                len(data),
+                None,
+                None,
             )
-
-            # Délai avant la prochaine lecture (ajustez selon vos besoins)
+            print("Measured value (V):", data[0])
             time.sleep(0.1)
 
     except KeyboardInterrupt:
-        print("Arrêt de l'acquisition de données.")
+        print("Data acquisition stopped by user.")
 
     finally:
-        # Arrêter et nettoyer la tâche
-        task1.Stop()
-        task1.Clear()
+        task1.StopTask()
+        task1.ClearTask()
