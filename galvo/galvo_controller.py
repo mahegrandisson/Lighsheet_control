@@ -52,10 +52,14 @@ def scan_between_galvos(start1, end1, start2, end2, steps):
     - steps: Number of discrete steps for each galvo.
     """
     task1 = Task()
-    task1.CreateAOVoltageChan("Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None)
+    task1.CreateAOVoltageChan(
+        "Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None
+    )
 
     task2 = Task()
-    task2.CreateAOVoltageChan("Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None)
+    task2.CreateAOVoltageChan(
+        "Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None
+    )
 
     galvo1_values = np.linspace(start1, end1, steps)
     galvo2_values = np.linspace(start2, end2, steps)

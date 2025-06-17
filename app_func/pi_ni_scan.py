@@ -45,7 +45,7 @@ def scan(
     frequency: float,
     sample_number_per_sine_period: int,
     path: str,
-    duration: float = 2
+    duration: float = 2,
 ):
     """
     Performs a Z-axis scan while sending a sinusoidal signal to the galvo (Y-axis).
@@ -62,7 +62,6 @@ def scan(
     - sample_number_per_sine_period: Number of samples per sine wave period.
     - duration: Duration of the scan in seconds (default is 120).
     """
-
 
     taskG = Task()
     taskG.CreateAOVoltageChan(
@@ -113,15 +112,15 @@ def scan(
         sample_rate,
     )
     fifteen_percent = data[len(data) - int(0.2 * len(data)) :]
-    print(fifteen_percent.shape)
-    print(data.shape)
+    # print(fifteen_percent.shape)
+    # print(data.shape)
     data = np.concatenate(
         (
             data,
             fifteen_percent,
         )
     )
-    print(data.shape)
+    # data.shape)
     taskG.WriteAnalogF64(
         len(data),
         False,
@@ -138,7 +137,6 @@ def scan(
         1.5,
     )
 
-
     pi_controller.devices[device_id - 1].gcscommands.MOV(
         axe,
         startZ,
@@ -151,7 +149,7 @@ def scan(
         stopZ,
         plane_number,
     )
-    
+
     images = []
     taskG.StartTask()
     task_ms.StartTask()
@@ -172,11 +170,12 @@ def scan(
     task_ms.ClearTask()
 
     for i in range(len(images)):
-        s = path + '/' + str(i) + ".tif"
+        s = path + "/" + str(i) + ".tif"
         imsave(
             s,
             images[i],
         )
+
 
 def sync_scan(
     pi_controller: PiController,
@@ -205,7 +204,6 @@ def sync_scan(
     - plane_size: Number of images per Z-slice (Y-steps).
     - plane_number: Number of Z-slices (planes).
     """
-
 
     axe = 1
     # a changer -----------------------------------------
@@ -285,7 +283,7 @@ def sync_scan(
             s,
             images[i],
         )
-    print("done")
+
 
 @thread_worker
 def brillouin_scan(
@@ -313,7 +311,6 @@ def brillouin_scan(
     - step_x/y/z: Step size for each axis (in micrometers, will be converted to mm internally).
     - path: Directory path where acquired OME-TIFF images will be saved.
     """
-
 
     axe = 1
     step_z = step_x / 1000
@@ -463,6 +460,7 @@ def brillouin_scan(
         path,
     )
 
+
 def save_images(
     images,
     path,
@@ -510,6 +508,7 @@ def save_images(
             },
         )
 
+
 def read_tiff_img(
     img: str,
 ):
@@ -542,10 +541,10 @@ if __name__ == "__main__":
     )
     core.setExposure(20)
     pi_controller = PiController()
-    scan(pi_controller,1,10,12,-0.5,0.5,10,20,10000)
+    scan(pi_controller, 1, 10, 12, -0.5, 0.5, 10, 20, 10000)
     # set_galvos_position(0,0)
-    #sync_scan(pi_controller,1,core,10,12,-0.5,0.5,20,10,10)
-    '''brillouin_scan(
+    # sync_scan(pi_controller,1,core,10,12,-0.5,0.5,20,10,10)
+    """brillouin_scan(
         pi_controller,
         core,
         12,
@@ -558,4 +557,4 @@ if __name__ == "__main__":
         100,
         20,
         "../images/Brillouin_Tiff",
-    )'''
+    )"""

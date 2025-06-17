@@ -14,7 +14,14 @@ from widgets.GalvoWidget import pi_widgets
 
 
 class PIControlWidget(QWidget):
-    def __init__(self, pi_controller: PiController, pi_val: float, controller_id: int, mini: float, maxi: float):
+    def __init__(
+        self,
+        pi_controller: PiController,
+        pi_val: float,
+        controller_id: int,
+        mini: float,
+        maxi: float,
+    ):
         super().__init__()
 
         self.limit_step = 4  # Maximum allowed step size for move commands
@@ -55,7 +62,9 @@ class PIControlWidget(QWidget):
             self.step_label = QLabel("Step: (mm)")
             init_step_value = "0.1"
 
-        self.title_label.setStyleSheet("color: white; font-family: 'Arial Black'; font-weight: bold;")
+        self.title_label.setStyleSheet(
+            "color: white; font-family: 'Arial Black'; font-weight: bold;"
+        )
         layout.addWidget(self.title_label)
 
         self.step_input = QLineEdit(init_step_value)
@@ -65,7 +74,9 @@ class PIControlWidget(QWidget):
         # Move device to initial position
         self.pi_controller.move_abs(self.controller_id, pi_val)
         # Wait until motion is complete
-        while not pi_controller.devices[self.controller_id - 1].gcscommands.qONT(axe)[1]:
+        while not pi_controller.devices[self.controller_id - 1].gcscommands.qONT(axe)[
+            1
+        ]:
             time.sleep(0.05)
 
         # Position label and input
@@ -129,7 +140,9 @@ class PIControlWidget(QWidget):
                 new_val = round(value + steps, 3)
                 self.position_input.setText(str(new_val))
             else:
-                self.err_display.setText(f"Step should be between {-self.limit_step} and {self.limit_step}")
+                self.err_display.setText(
+                    f"Step should be between {-self.limit_step} and {self.limit_step}"
+                )
 
     def move_down(self):
         try:
@@ -161,7 +174,9 @@ class PIControlWidget(QWidget):
                 new_val = round(value - steps, 3)
                 self.position_input.setText(str(new_val))
             else:
-                self.err_display.setText(f"Step should be between {-self.limit_step} and {self.limit_step}")
+                self.err_display.setText(
+                    f"Step should be between {-self.limit_step} and {self.limit_step}"
+                )
 
     def send_position(self):
         try:
@@ -208,7 +223,9 @@ if __name__ == "__main__":
         else:
             mini, maxi = 0.001, 16.999
 
-        pi_widget = PIControlWidget(pi_controller, pi_vals[i - 1], controller_id=i, mini=mini, maxi=maxi)
+        pi_widget = PIControlWidget(
+            pi_controller, pi_vals[i - 1], controller_id=i, mini=mini, maxi=maxi
+        )
         app.window.add_dock_widget(pi_widget, area="right")
         pi_widgets.append(pi_widget)
 

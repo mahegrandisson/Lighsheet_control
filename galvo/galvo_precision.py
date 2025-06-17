@@ -52,10 +52,14 @@ def scan_between_galvos(start1, end1, start2, end2, steps):
     - steps (int): Number of positions (steps) per galvo.
     """
     task1 = Task()
-    task1.CreateAOVoltageChan("Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None)
+    task1.CreateAOVoltageChan(
+        "Dev1/ao0", "", start1, end1, PyDAQmx.DAQmx_Val_Volts, None
+    )
 
     task2 = Task()
-    task2.CreateAOVoltageChan("Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None)
+    task2.CreateAOVoltageChan(
+        "Dev1/ao1", "", start2, end2, PyDAQmx.DAQmx_Val_Volts, None
+    )
 
     galvo1_values = np.linspace(start1, end1, steps)
     galvo2_values = np.linspace(start2, end2, steps)
@@ -97,7 +101,7 @@ if __name__ == "__main__":
     # Create a task for analog input (e.g., photodiode or sensor signal)
     task1 = Task()
     task1.CreateAIVoltageChan(
-        "Dev1/ai0",          # Analog input channel
+        "Dev1/ai0",  # Analog input channel
         "",
         PyDAQmx.DAQmx_Val_Cfg_Default,
         -10.0,
@@ -108,8 +112,8 @@ if __name__ == "__main__":
 
     # Configure the sampling clock
     task1.CfgSampClkTiming(
-        "",                       # Use onboard clock
-        1000.0,                   # Sampling rate: 1000 samples/sec
+        "",  # Use onboard clock
+        1000.0,  # Sampling rate: 1000 samples/sec
         PyDAQmx.DAQmx_Val_Rising,
         PyDAQmx.DAQmx_Val_ContSamps,
         1,

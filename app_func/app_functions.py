@@ -21,6 +21,7 @@ pi4_val = 12
 # List to store PI widgets (e.g., motor controllers)
 pi_widgets = []
 
+
 def load_yaml(path: str):
     """
     Load and parse a YAML file from the given path.
@@ -34,6 +35,7 @@ def load_yaml(path: str):
     with open(path, "r") as file:
         return yaml.safe_load(file)
 
+
 def save_yaml(dictionnaire, chemin):
     """
     Save a dictionary to a YAML file at the specified path.
@@ -44,6 +46,7 @@ def save_yaml(dictionnaire, chemin):
     """
     with open(chemin, "w") as file:
         yaml.dump(dictionnaire, file, default_flow_style=False)
+
 
 def save_params_for_all_widgets(pi_widgets):
     """
@@ -56,12 +59,14 @@ def save_params_for_all_widgets(pi_widgets):
     Returns:
         Callable: Wrapped function with pre-execution save logic.
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             for widget in pi_widgets:
                 if hasattr(widget, "save_params"):
                     widget.save_params()
             return func(*args, **kwargs)
+
         return wrapper
 
     return decorator

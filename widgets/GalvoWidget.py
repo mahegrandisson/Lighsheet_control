@@ -91,12 +91,10 @@ class SlidesWidget(QWidget):
         )
         self.north_south_label.setText(f"Y Axis -/+ :  {value:.3f} V")
 
-
     def move_east_west(self):
         value = self.east_west_slider.value() * 0.001
         set_galvos_position(value=value, galvo_id=1)
         self.east_west_label.setText(self.es_text)
-
 
     def reset_galvos(
         self,
@@ -125,7 +123,8 @@ class SlidesWidget(QWidget):
 
 if __name__ == "__main__":
     import os
-    os.chdir('..')
+
+    os.chdir("..")
     params = load_yaml(CONFIG)
     galvo1_val = float(params["galvo1_val"])
     galvo2_val = float(params["galvo2_val"])

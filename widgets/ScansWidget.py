@@ -13,12 +13,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 import napari
-import os
-
-from pymmcore_plus import CMMCorePlus
-from pi_contol.PiController import PiController
-from app_func.pi_ni_scan import brillouin_scan
-from app_func.app_functions import B_PARAMS
 
 from pymmcore_plus import (
     CMMCorePlus,
@@ -26,12 +20,8 @@ from pymmcore_plus import (
 from pi_contol.PiController import (
     PiController,
 )
-from app_func.pi_ni_scan import (
-    brillouin_scan,scan
-)
-from app_func.app_functions import (
-    B_PARAMS,F_PARAMS
-)
+from app_func.pi_ni_scan import brillouin_scan, scan
+from app_func.app_functions import B_PARAMS, F_PARAMS
 
 
 class ScanBTNWidget(QWidget):
@@ -47,7 +37,7 @@ class ScanBTNWidget(QWidget):
         self.setWindowTitle("Scan Widget")
         self.setGeometry(100, 100, 200, 100)
 
-        self.scan_button = QPushButton("Scan parameters", self)
+        self.scan_button = QPushButton("Sync Scan parameters", self)
         self.scan_button.setStyleSheet(
             """
             background-color: rgb(180, 180, 180);
@@ -77,11 +67,12 @@ class ScanBTNWidget(QWidget):
             widget.show()
             widget.hidden = False
 
+
 class FastScanBTNWidget(QWidget):
     def __init__(
-            self,
-            pi_controller,
-            core,
+        self,
+        pi_controller,
+        core,
     ):
         super().__init__()
         self.fast_scan_widget = FastScanWidget(
@@ -121,8 +112,8 @@ class FastScanBTNWidget(QWidget):
         self.setLayout(layout)
 
     def toggle_widget(
-            self,
-            widget,
+        self,
+        widget,
     ):
 
         if not widget.hidden:
@@ -168,7 +159,7 @@ class ScanWidget(QWidget):
         self.start_y, self.end_y = 14, 14
 
         # Configure widget appearance
-        self.setWindowTitle("Scan parameters")
+        self.setWindowTitle("Sync Scan parameters")
         self.setGeometry(0, 0, 800, 500)
         self.setStyleSheet(
             """
@@ -189,7 +180,7 @@ class ScanWidget(QWidget):
         )
         self.setWindowFlags(Qt.Window)
 
-        self.title_label = QLabel("Scan Parameters", self)
+        self.title_label = QLabel("Sync Scan Parameters", self)
         self.title_label.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.title_label.setAlignment(Qt.AlignCenter)
 
@@ -455,6 +446,7 @@ class ScanWidget(QWidget):
             self.path_input.setText(folder)
         self.show()
 
+
 class FastScanWidget(QWidget):
     def __init__(
         self,
@@ -468,16 +460,15 @@ class FastScanWidget(QWidget):
         self.core.setCameraDevice(self.core.getLoadedDevices()[0])
         self.filepath = F_PARAMS
         self.full_path = ""
-        #safety measure
-        self.start_X=8
-        self.stop_X=8
-        self.start_Y=8
-        self.stop_Y=8
-        self.start_Z=8
-        self.stop_Z=8
+        # safety measure
+        self.start_X = 8
+        self.stop_X = 8
+        self.start_Y = 8
+        self.stop_Y = 8
+        self.start_Z = 8
+        self.stop_Z = 8
 
-
-        self.setWindowTitle("Scan parameters")
+        self.setWindowTitle("Fast Scan parameters")
         self.setGeometry(
             0,
             0,
@@ -504,7 +495,7 @@ class FastScanWidget(QWidget):
         self.setWindowFlags(Qt.Window)
 
         self.title_label = QLabel(
-            "Scan Parameters",
+            "Fast Scan Parameters",
             self,
         )
         self.title_label.setStyleSheet("font-size: 18px; font-weight: bold;")
@@ -569,14 +560,11 @@ class FastScanWidget(QWidget):
             6,
         )
 
-
-
         grid_layout.addWidget(
             QLabel("end scan values:"),
             1,
             0,
         )
-
 
         grid_layout.addWidget(
             QLabel("X stop (mm):"),
@@ -702,35 +690,42 @@ class FastScanWidget(QWidget):
             btc_y = float(self.br_y_input.text())
             btc_z = float(self.br_z_input.text())
 
-
             ulc_y = float(self.ul_y_input.text())
             ulc_z = float(self.ul_z_input.text())
-
-
 
             z_step = float(self.z_step_input.text())
             z_step = int(z_step)
             freq = float(self.freq_input.text())
-            freq=int(freq)
+            freq = int(freq)
 
             dur = float(self.duration_input.text())
 
-            print(btc_z, ulc_z, btc_y, ulc_y, z_step, freq,dur)
             self.disp_label.setText("running and computing...")
             self.full_path = (
                 self.path_input.text() + "/" + self.folder_prefix_input.text()
             )
             if not os.path.isdir(self.full_path):
                 os.makedirs(self.full_path)
-            worker = scan(pi_controller,self.core,1,btc_z,ulc_z,btc_y,ulc_y,z_step,freq,10000,path = self.full_path,duration=dur)
+            worker = scan(
+                self.pi_controller,
+                self.core,
+                1,
+                btc_z,
+                ulc_z,
+                btc_y,
+                ulc_y,
+                z_step,
+                freq,
+                10000,
+                path=self.full_path,
+                duration=dur,
+            )
             worker.start()
             worker.signals.finished.connect(lambda: self.scan_state(0))
 
             # else:
             #    self.disp_label.setText("Please save parameters first")
         except Exception as e:
-            print("NOK")
-            print(int(self.z_step_input.text()))
             self.disp_label.setText(f"Invalid parameters:{e}")
 
     def scan_state(
@@ -739,6 +734,7 @@ class FastScanWidget(QWidget):
     ):
         if state == 0:
             self.disp_label.setText("Scan done ! images saved at " + self.full_path)
+
     def select_folder(
         self,
     ):
@@ -774,11 +770,9 @@ class FastScanWidget(QWidget):
             self.duration_input.setText(str(params["duration"]))
             self.z_step_input.setText(str(params["steps"]["z_step"]))
 
-
             self.path_input.setText(params["folder"])
 
             self.folder_prefix_input.setText(params["folder prefix"])
-
 
             self.freq_input.setText(str(params["freq"]))
 
@@ -786,6 +780,7 @@ class FastScanWidget(QWidget):
 
         except Exception as e:
             self.disp_label.setText(f"Failed to load parameters: {e}")
+
     def save_parameters(
         self,
     ):
@@ -802,7 +797,6 @@ class FastScanWidget(QWidget):
 
             d = float(self.duration_input.text())
             z_step = float(self.z_step_input.text())
-
 
             if (
                 4 <= btc_x < 17
@@ -830,8 +824,7 @@ class FastScanWidget(QWidget):
                     "folder": self.path_input.text(),
                     "folder prefix": self.folder_prefix_input.text(),
                     "freq": float(self.freq_input.text()),
-                    "duration": d
-
+                    "duration": d,
                 }
 
                 with open(
@@ -852,9 +845,9 @@ class FastScanWidget(QWidget):
             self.disp_label.setText("Parameters must be float")
 
 
-
 if __name__ == "__main__":
     import os
+
     os.chdir("..")
     core = CMMCorePlus()
     core.loadSystemConfiguration(
@@ -866,7 +859,7 @@ if __name__ == "__main__":
     widget = ScanBTNWidget(pi_controller, core)
     app.window.add_dock_widget(widget, area="left")
 
-    Fwidget = FastScanBTNWidget(pi_controller,core)
+    Fwidget = FastScanBTNWidget(pi_controller, core)
 
     app.window.add_dock_widget(
         Fwidget,

@@ -4,6 +4,7 @@ from PyDAQmx import (
     Task,
 )
 
+
 def set_galvos_position(
     value: float,
     galvo_id: int,

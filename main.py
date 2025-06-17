@@ -4,9 +4,7 @@ from widgets.PiControlWidget import (
 from widgets.GalvoWidget import (
     SlidesWidget,
 )
-from widgets.ScansWidget import (
-    ScanBTNWidget,FastScanBTNWidget
-)
+from widgets.ScansWidget import ScanBTNWidget, FastScanBTNWidget
 from app_func.app_functions import *
 
 import napari
@@ -123,7 +121,7 @@ if __name__ == "__main__":
         sc_widget,
         area="left",
     )
-    Fwidget = FastScanBTNWidget(pi_controller,core)
+    Fwidget = FastScanBTNWidget(pi_controller, core)
 
     app.window.add_dock_widget(
         Fwidget,
