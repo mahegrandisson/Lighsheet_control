@@ -3,6 +3,7 @@ import yaml
 # Paths to configuration files
 CONFIG_FOLDER = "config/"
 B_PARAMS = CONFIG_FOLDER + "brillouin_params.yaml"
+F_PARAMS = CONFIG_FOLDER + "fluo_params.yaml"
 CONFIG = CONFIG_FOLDER + "galvo_pi_config.yaml"
 SYS_CONFIG = r"C:\Program Files\Micro-Manager-2.0\Hamamatsu\orcaFlash_orcaQuest.cfg"
 # Alternative configuration file (commented out)

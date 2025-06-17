@@ -1,0 +1,14 @@
+bottom_right_corner:
+  x: 4.0
+  y: 4.0
+  z: 10.0
+duration: 2.0
+folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images/TEST
+folder prefix: fast
+freq: 20.0
+steps:
+  z_step: 1.0
+upper_left_corner:
+  x: 4.0
+  y: 4.0
+  z: 10.0

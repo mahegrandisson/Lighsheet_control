@@ -31,6 +31,10 @@ from napari.qt.threading import (
 )
 import os
 
+<<<<<<< Updated upstream
+=======
+@thread_worker
+>>>>>>> Stashed changes
 def scan(
     pi_controller: PiController,
     device_id: int,
@@ -538,10 +542,10 @@ if __name__ == "__main__":
     )
     core.setExposure(20)
     pi_controller = PiController()
-    # scan(pi_controller,1,10,12,-0.5,0.5,10,20,10000)
+    scan(pi_controller,1,10,12,-0.5,0.5,10,20,10000)
     # set_galvos_position(0,0)
-    # sync_scan(pi_controller,1,core,10,12,-0.5,0.5,20,10,10)
-    brillouin_scan(
+    #sync_scan(pi_controller,1,core,10,12,-0.5,0.5,20,10,10)
+    '''brillouin_scan(
         pi_controller,
         core,
         12,
@@ -554,4 +558,4 @@ if __name__ == "__main__":
         100,
         20,
         "../images/Brillouin_Tiff",
-    )
+    )'''
