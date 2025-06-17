@@ -1,4 +1,5 @@
 import yaml
+import os
 from PyQt5.QtWidgets import (
     QWidget,
     QPushButton,
@@ -405,10 +406,11 @@ class ScanWidget(QWidget):
 
             self.disp_label.setText("Running and computing...")
 
-            self.full_path = os.path.join(
-                self.path_input.text(), self.folder_prefix_input.text()
+            self.full_path = (
+                    self.path_input.text() + "/" + self.folder_prefix_input.text()
             )
-
+            if not os.path.isdir(self.full_path):
+                os.makedirs(self.full_path)
             worker = brillouin_scan(
                 self.pi_controller,
                 self.core,
@@ -606,9 +608,14 @@ class FastScanWidget(QWidget):
             "plane number (Z axis):",
             self.z_step_input,
         )
+        self.exposure_input = QLineEdit()
+        form_layout.addRow(
+            "exposure (ms):",
+            self.exposure_input,
+        )
         self.duration_input = QLineEdit()
         form_layout.addRow(
-            "duration:",
+            "duration (s):",
             self.duration_input,
         )
         form_layout.addRow(
@@ -684,7 +691,7 @@ class FastScanWidget(QWidget):
         self,
     ):
         try:
-            self.core.setExposure(float(self.freq_input.text()))
+            self.core.setExposure(float(self.exposure_input.text()))
             # if self.disp_label.text() == "Parameters saved !":
 
             btc_y = float(self.br_y_input.text())
@@ -766,7 +773,7 @@ class FastScanWidget(QWidget):
             self.ul_x_input.setText(str(params["upper_left_corner"]["x"]))
             self.ul_y_input.setText(str(params["upper_left_corner"]["y"]))
             self.ul_z_input.setText(str(params["upper_left_corner"]["z"]))
-
+            self.exposure_input.setText(str(params["exposure"]))
             self.duration_input.setText(str(params["duration"]))
             self.z_step_input.setText(str(params["steps"]["z_step"]))
 
@@ -797,6 +804,7 @@ class FastScanWidget(QWidget):
 
             d = float(self.duration_input.text())
             z_step = float(self.z_step_input.text())
+            exp = float(self.exposure_input.text())
 
             if (
                 4 <= btc_x < 17
@@ -825,6 +833,7 @@ class FastScanWidget(QWidget):
                     "folder prefix": self.folder_prefix_input.text(),
                     "freq": float(self.freq_input.text()),
                     "duration": d,
+                    "exposure": exp
                 }
 
                 with open(

@@ -3,8 +3,9 @@ bottom_right_corner:
   y: 4.0
   z: 10.0
 duration: 5.0
+exposure: 10.0
 folder: C:/Users/administrateur/PycharmProjects/GalvoControl/images/TEST
-folder prefix: fast
+folder prefix: exp
 freq: 20.0
 steps:
   z_step: 20.0

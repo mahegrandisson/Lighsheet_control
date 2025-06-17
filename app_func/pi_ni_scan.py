@@ -12,9 +12,6 @@ from PyDAQmx import (
     Task,
 )
 import PyDAQmx
-
-from testing.pulsing import generate_sin_wave
-
 import time
 from pymmcore_plus import (
     CMMCorePlus,
@@ -30,6 +27,29 @@ from napari.qt.threading import (
     thread_worker,
 )
 import os
+
+
+
+def generate_sin_wave(
+    start_value,
+    end_value,
+    frequency,
+    duration: float,
+    sampling_rate=1000,
+):
+
+    t = np.linspace(
+        0,
+        duration,
+        int(sampling_rate * duration),
+        endpoint=False,
+    )
+
+    amplitude = (start_value - end_value) / 2
+
+    sine_wave = amplitude * np.sin(2 * np.pi * frequency * t)
+    return sine_wave
+
 
 
 @thread_worker
