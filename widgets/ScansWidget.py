@@ -14,12 +14,12 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 import napari
 import os
-<<<<<<< Updated upstream
+
 from pymmcore_plus import CMMCorePlus
 from pi_contol.PiController import PiController
 from app_func.pi_ni_scan import brillouin_scan
 from app_func.app_functions import B_PARAMS
-=======
+
 from pymmcore_plus import (
     CMMCorePlus,
 )
@@ -32,7 +32,6 @@ from app_func.pi_ni_scan import (
 from app_func.app_functions import (
     B_PARAMS,F_PARAMS
 )
->>>>>>> Stashed changes
 
 
 class ScanBTNWidget(QWidget):
@@ -438,6 +437,7 @@ class ScanWidget(QWidget):
 
         except Exception as e:
             self.disp_label.setText(f"Invalid parameters: {e}")
+            print(self.pi_controller)
 
     def scan_state(self, state: int):
         """
@@ -616,10 +616,6 @@ class FastScanWidget(QWidget):
 
         form_layout.addRow(
             "plane number (Z axis):",
-            self.y_step_input,
-        )
-        form_layout.addRow(
-            "Z Step (µm):",
             self.z_step_input,
         )
         self.duration_input = QLineEdit()
@@ -711,21 +707,30 @@ class FastScanWidget(QWidget):
             ulc_z = float(self.ul_z_input.text())
 
 
-            s_y = float(self.y_step_input.text())
-            z_step = float(self.z_step_input.text())
 
+            z_step = float(self.z_step_input.text())
+            z_step = int(z_step)
             freq = float(self.freq_input.text())
+            freq=int(freq)
+
+            dur = float(self.duration_input.text())
+
+            print(btc_z, ulc_z, btc_y, ulc_y, z_step, freq,dur)
             self.disp_label.setText("running and computing...")
             self.full_path = (
                 self.path_input.text() + "/" + self.folder_prefix_input.text()
             )
-            worker = scan(pi_controller,1,btc_z,ulc_z,btc_y,ulc_y,z_step,freq,10000)
+            if not os.path.isdir(self.full_path):
+                os.makedirs(self.full_path)
+            worker = scan(pi_controller,self.core,1,btc_z,ulc_z,btc_y,ulc_y,z_step,freq,10000,path = self.full_path,duration=dur)
             worker.start()
             worker.signals.finished.connect(lambda: self.scan_state(0))
 
             # else:
             #    self.disp_label.setText("Please save parameters first")
         except Exception as e:
+            print("NOK")
+            print(int(self.z_step_input.text()))
             self.disp_label.setText(f"Invalid parameters:{e}")
 
     def scan_state(
@@ -769,6 +774,7 @@ class FastScanWidget(QWidget):
             self.duration_input.setText(str(params["duration"]))
             self.z_step_input.setText(str(params["steps"]["z_step"]))
 
+
             self.path_input.setText(params["folder"])
 
             self.folder_prefix_input.setText(params["folder prefix"])
@@ -796,6 +802,7 @@ class FastScanWidget(QWidget):
 
             d = float(self.duration_input.text())
             z_step = float(self.z_step_input.text())
+
 
             if (
                 4 <= btc_x < 17
@@ -855,22 +862,15 @@ if __name__ == "__main__":
     )
     pi_controller = PiController()
     app = napari.Viewer()
-<<<<<<< Updated upstream
+
     widget = ScanBTNWidget(pi_controller, core)
     app.window.add_dock_widget(widget, area="left")
-=======
+
     Fwidget = FastScanBTNWidget(pi_controller,core)
-    widget = ScanBTNWidget(
-        pi_controller,
-        core,
-    )
+
     app.window.add_dock_widget(
         Fwidget,
         area="left",
     )
-    app.window.add_dock_widget(
-        widget,
-        area="left",
-    )
->>>>>>> Stashed changes
+
     napari.run()

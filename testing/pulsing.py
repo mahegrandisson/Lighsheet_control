@@ -18,7 +18,7 @@ def generate_sin_wave(
     t = np.linspace(
         0,
         duration,
-        sampling_rate * duration,
+        int(sampling_rate * duration),
         endpoint=False,
     )
 

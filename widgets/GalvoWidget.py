@@ -83,34 +83,20 @@ class SlidesWidget(QWidget):
 
     def move_north_south(self):
         value = -self.north_south_slider.value() * 0.001
-<<<<<<< Updated upstream
         set_galvos_position(value=value, galvo_id=2)
         self.north_south_label.setText(self.ns_text)
-=======
         set_galvos_position(
             value=value,
             galvo_id=2,
         )
         self.north_south_label.setText(f"Y Axis -/+ :  {value:.3f} V")
->>>>>>> Stashed changes
+
 
     def move_east_west(self):
         value = self.east_west_slider.value() * 0.001
-<<<<<<< Updated upstream
         set_galvos_position(value=value, galvo_id=1)
         self.east_west_label.setText(self.es_text)
 
-    def reset_galvos(self):
-        set_galvos_position(0, galvo_id=1)
-        set_galvos_position(0, galvo_id=2)
-        self.north_south_label.setText(self.ns_text)
-        self.east_west_label.setText(self.es_text)
-=======
-        set_galvos_position(
-            value=value,
-            galvo_id=1,
-        )
-        self.east_west_label.setText(f"Z Axis -/+ :  {value:.3f} V")
 
     def reset_galvos(
         self,
@@ -125,7 +111,6 @@ class SlidesWidget(QWidget):
         )
         self.north_south_label.setText(f"Y Axis -/+ :  {0:.3f} V")
         self.east_west_label.setText(f"Z Axis -/+ :  {0:.3f} V")
->>>>>>> Stashed changes
         self.north_south_slider.setValue(0)
         self.east_west_slider.setValue(0)
 

@@ -5,7 +5,7 @@ from widgets.GalvoWidget import (
     SlidesWidget,
 )
 from widgets.ScansWidget import (
-    ScanBTNWidget,
+    ScanBTNWidget,FastScanBTNWidget
 )
 from app_func.app_functions import *
 
@@ -121,6 +121,12 @@ if __name__ == "__main__":
     )
     app.window.add_dock_widget(
         sc_widget,
+        area="left",
+    )
+    Fwidget = FastScanBTNWidget(pi_controller,core)
+
+    app.window.add_dock_widget(
+        Fwidget,
         area="left",
     )
 

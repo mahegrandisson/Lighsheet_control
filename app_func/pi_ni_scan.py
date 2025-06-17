@@ -31,12 +31,11 @@ from napari.qt.threading import (
 )
 import os
 
-<<<<<<< Updated upstream
-=======
+
 @thread_worker
->>>>>>> Stashed changes
 def scan(
     pi_controller: PiController,
+    core: CMMCorePlus,
     device_id: int,
     startZ: float,
     stopZ: float,
@@ -45,7 +44,8 @@ def scan(
     plane_number: int,
     frequency: float,
     sample_number_per_sine_period: int,
-    duration: float = 120,
+    path: str,
+    duration: float = 2
 ):
     """
     Performs a Z-axis scan while sending a sinusoidal signal to the galvo (Y-axis).
@@ -172,7 +172,7 @@ def scan(
     task_ms.ClearTask()
 
     for i in range(len(images)):
-        s = "TEST/" + str(i) + ".tif"
+        s = path + '/' + str(i) + ".tif"
         imsave(
             s,
             images[i],
