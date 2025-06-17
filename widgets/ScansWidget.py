@@ -1,5 +1,6 @@
 import yaml
 import os
+from app_func.flip_mirror import switch_mirror
 from PyQt5.QtWidgets import (
     QWidget,
     QPushButton,
@@ -411,6 +412,13 @@ class ScanWidget(QWidget):
             )
             if not os.path.isdir(self.full_path):
                 os.makedirs(self.full_path)
+
+            if "QUEST" in self.camera_input.currentText().upper():
+                switch_mirror(1)
+            else:
+                print("ok")
+                switch_mirror(0)
+
             worker = brillouin_scan(
                 self.pi_controller,
                 self.core,
@@ -713,6 +721,7 @@ class FastScanWidget(QWidget):
             )
             if not os.path.isdir(self.full_path):
                 os.makedirs(self.full_path)
+            switch_mirror(0)
             worker = scan(
                 self.pi_controller,
                 self.core,
