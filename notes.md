@@ -33,3 +33,7 @@ FEP,water and quartz cuvette imaging. The hardest is FEP for now, Brillouin sign
 # 11/06/2025
 FEP,water,PMMA and quartz cuvette imaging. Better images, adjusting the height, focus and the region we're actually 
 looking at. FEP and PMMA are the hardest but we can discern some signal.
+
+# 17/06/2025
+Need to measure the size of the line after objective and far without lenses for Corinne and Amine.
+flip mirror added and Fast scan as well
